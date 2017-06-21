@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# The deep_merge gem has already been installed by puppet
+# client AIO package. Nothing to do here.
+#
+# This file is for documentation purposes only to not
+# forget the above fact.
+#
+

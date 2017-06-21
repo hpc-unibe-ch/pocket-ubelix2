@@ -1,0 +1,13 @@
+#!/bin/bash
+
+foreman_relpkg_url="https://yum.theforeman.org/releases/1.12/el7/x86_64/foreman-release.rpm"
+
+# install foreman repo
+if ! rpm -qa | grep foreman-installer >/dev/null 2>&1; then
+  yum -y install $foreman_relpkg_url
+  yum -y makecache
+  yum -y install foreman-installer
+else
+  echo "Foreman installer already installed."
+fi
+

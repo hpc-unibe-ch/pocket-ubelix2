@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd /etc/puppetlabs/code/environments/production
+rm -rf hieradata && ln -s /vagrant/hieradata hieradata
+rm -rf manifests && ln -s /vagrant/manifests manifests
+rm -rf modules && ln -s /vagrant/modules modules
+

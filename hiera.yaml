@@ -1,0 +1,25 @@
+---
+:backends:
+  - eyaml
+  - yaml
+:logger: puppet
+:hierarchy:
+  - "environment/%{environment}"
+  - "secrets"
+  - "node/%{::fqdn}"
+  - "subrole/%{::role}/%{::subrole}"
+  - "role/%{::role}"
+  - "os/%{::osfamily}-%{::operatingsystemmajrelease}"
+  - "common"
+# options are native, deep, deeper
+:merge_behavior: deeper
+:yaml:
+  # When specifying a datadir, make sure the directory exists.
+  :datadir: "/etc/puppet/environments/%{environment}/hieradata"
+:eyaml:
+  :datadir: "/etc/puppet/environments/%{environment}/hieradata"
+  :extension: 'yaml'
+  # If using the pkcs7 encryptor (default)
+  :pkcs7_private_key: /etc/puppet/secure/keys/private_key.pkcs7.pem
+  :pkcs7_public_key:  /etc/puppet/secure/keys/public_key.pkcs7.pem
+

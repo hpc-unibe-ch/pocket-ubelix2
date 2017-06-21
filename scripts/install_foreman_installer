@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# install foreman repo
+yum -y install epel-release \
+               https://yum.theforeman.org/releases/1.12/el7/x86_64/foreman-release.rpm
+yum -y makecache
+

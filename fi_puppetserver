@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+BIN_DIR=$(dirname -- $(readlink -f $0))
+
+$BIN_DIR/snippet_dis_firewalld
+$BIN_DIR/snippet_inst_bashc
+$BIN_DIR/snippet_inst_epel
+$BIN_DIR/snippet_inst_pc
+$BIN_DIR/snippet_inst_fi
+
+# Setup puppetserver using foreman-installer
+foreman-installer \
+  --no-enable-foreman \
+  --no-enable-foreman-cli \
+  --no-enable-foreman-plugin-bootdisk \
+  --no-enable-foreman-plugin-setup \
+  --enable-puppet \
+  --puppet-server-ca=true \
+  --puppet-server-implementation="puppetserver" \
+  --puppet-server-foreman-url="https://foreman" \
+  --puppet-server-jvm-max-heap-size=1g \
+  --puppet-server-jvm-min-heap-size=1g \
+  --puppet-server-additional-settings=show_diff:true \
+  --enable-foreman-proxy \
+  --foreman-proxy-puppetca=true \
+  --foreman-proxy-tftp=false \
+  --foreman-proxy-foreman-base-url="https://foreman" \
+  --foreman-proxy-trusted-hosts="foreman01.ubelix.unibe.ch" \
+  --foreman-proxy-trusted-hosts="foreman02.ubelix.unibe.ch" \
+  --foreman-proxy-oauth-consumer-key=H3qpo6nzr2fub3thbnCYg8AdXobxGv9p \
+  --foreman-proxy-oauth-consumer-secret=uD3wRj9yMdZFt8Z4UvF5bybfPFmWjfpH \
+  --verbose
+
+# Purge production environment and rewire to vagrant filespace
+$BIN_DIR/snippet_inst_eyaml
+$BIN_DIR/snippet_inst_r10k
+

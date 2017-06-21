@@ -1,0 +1,50 @@
+#!/bin/bash
+
+elmajver="7"
+pupcolrel_version="pc1"
+
+pupcolrel_url="http://yum.puppetlabs.com/puppetlabs-release-${pupcolrel_version}-el-${elmajver}.noarch.rpm"
+
+# Disable firewall
+systemctl stop firewalld
+systemctl disable firewalld
+
+if ! rpm -qa | grep puppetlabs-release-$pupcolrel_version >/dev/null 2>&1; then
+  sudo yum -y install $pupcolrel_url
+  sudo yum clean all
+  sudo yum makecache
+else
+  echo "Puppet Collection is available."
+fi
+
+if ! rpm -qa | grep puppetserver >/dev/null 2>&1; then
+  yum -y install puppetserver
+
+  # Reminder standalone run of puppet
+  #cat > temp.pp <<EOF
+#class { '::puppet': server => true }
+#EOF
+  #puppet apply temp.pp --modulepath /path_to/extracted_tarball
+  #rm temp.pp
+
+  sed -i 's/Xms2g/Xms1g/' /etc/sysconfig/puppetserver
+  sed -i 's/Xmx2g/Xmx1g/' /etc/sysconfig/puppetserver
+
+  cd /etc/puppetlabs/code/environments/production
+
+  rm -rf hieradata && ln -s /vagrant/hieradata hieradata
+  rm -rf manifests && ln -s /vagrant/manifests manifests
+  rm -rf modules && ln -s /vagrant/modules modules
+else
+  echo "Puppet server is installed."
+fi
+
+if ! systemctl status puppetserver.service >/dev/null 2>&1; then
+  systemctl start puppetserver.service
+  echo "Puppet server has been started."
+else
+  echo "Puppet server is running."
+fi
+
+exit 0
+

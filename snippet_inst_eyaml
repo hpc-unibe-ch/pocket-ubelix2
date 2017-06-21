@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+BIN_DIR=$(dirname -- $(readlink -f $0))
+
+# Install hiera-eyaml gem in appropriate locations and
+# generate necessary directories.
+if ! type eyaml >/dev/null 2>&1; then
+  # once for cli usage
+  /opt/puppetlabs/puppet/bin/gem install hiera-eyaml
+  # once to be used by puppetserver
+  /opt/puppetlabs/bin/puppetserver gem install hiera-eyaml
+  ln -s /opt/puppetlabs/puppet/bin/eyaml /opt/puppetlabs/bin/eyaml
+  mkdir -p /etc/eyaml
+fi
+
+
+# Configuration of CLI eyaml
+cat << EOF > /etc/eyaml/config.yaml
+pkcs7_private_key: '/etc/eyaml/private_key.pkcs7.pem'
+pkcs7_public_key: '/etc/eyaml/public_key.pkcs7.pem'
+EOF
+
+# Place hiera.yaml
+cat << EOF > /etc/puppetlabs/puppet/hiera.yaml
+---
+:backends:
+  - eyaml
+  - yaml
+:logger: puppet
+:hierarchy:
+  - "environment/%{environment}"
+  - "secrets"
+  - "node/%{::fqdn}"
+  - "subrole/%{::role}/%{::subrole}"
+  - "role/%{::role}"
+  - "os/%{::osfamily}-%{::operatingsystemmajrelease}"
+  - "common"
+# options are native, deep, deeper
+:merge_behavior: deeper
+:yaml:
+  # When specifying a datadir, make sure the directory exists.
+  :datadir: "/etc/puppet/environments/%{environment}/hieradata"
+:eyaml:
+  :datadir: "/etc/puppet/environments/%{environment}/hieradata"
+  :extension: 'yaml'
+  # If using the pkcs7 encryptor (default)
+  :pkcs7_private_key: /etc/puppet/secure/keys/private_key.pkcs7.pem
+  :pkcs7_public_key:  /etc/puppet/secure/keys/public_key.pkcs7.pem
+EOF
+
+echo "eyaml is now setup and hiera configured."
+echo "Place the public and private keys for eyaml into /etc/eyaml/ and test with hiera:"
+echo "  hiera sensu::rabbitmq_password environment=development ::role=infraserver ::subrole=service"
+echo ""
+
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# install epel repo
+if ! rpm -qa | grep epel-release >/dev/null 2>&1; then
+  yum -y install epel-release
+else
+  echo "EPEL repository already installed."
+fi
+
