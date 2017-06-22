@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# install bash completion
-if ! rpm -qa | grep bash-completion >/dev/null 2>&1; then
-  yum -y install bash-completion
-else
-  echo "Bash completion already installed."
-fi
-
