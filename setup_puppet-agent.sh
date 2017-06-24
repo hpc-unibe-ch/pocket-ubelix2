@@ -19,10 +19,15 @@ fi
 if [ ! -f /etc/profile.d/puppet-agent.sh ]; then
   info "Installing puppet agent."
   yum -y install puppet-agent >/dev/null
-  source /etc/profile.d/puppet-agent.sh
   success "Puppet agent has been installed."
 else
   success "Puppet agent is already installed."
+fi
+
+if ! which puppet >/dev/null 2>&1
+then
+  info "To use puppet source the profile file or relogin:"
+  info "$ source /etc/profile.d/puppet-agent.sh\n"
 fi
 
 info "Now add dns_alt_names if necessary (puppetdb/foreman)"
