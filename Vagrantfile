@@ -11,30 +11,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #config.ssh.insert_key = 'false'
   config.vm.box = "centos-7-x86_64-nocm"
 
-  config.vm.define "foreman" do |foreman|
-    foreman.vm.host_name = "foreman02.ubelix.unibe.ch"
-    foreman.vm.network "private_network", ip: "10.1.128.26", netmask: "255.255.0.0"
-    foreman.vm.network "forwarded_port", guest: 443, host: 7843
-    foreman.vm.network "forwarded_port", guest: 80, host: 7880
-    foreman.vm.provider "virtualbox" do |vb|
-      vb.name = "foreman02.ubelix.unibe.ch"
-      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      vb.customize ["modifyvm", :id, "--name", "foreman02"]
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-    end
-    foreman.vm.provision :hosts
-    #foreman.vm.provision "shell", path: "puppetenv/bin/bootstrap_server.sh"
-    #foreman.vm.provision "shell", path: "puppetenv/bin/install_foreman.sh", args: "/vagrant/puppetenv/bin/foreman-installer-answers-ubelix.yaml 1"
-  end
+  #config.vm.define "foreman" do |foreman|
+  #  foreman.vm.host_name = "foreman02.ubelix.unibe.ch"
+  #  foreman.vm.network "private_network", ip: "10.1.128.26", netmask: "255.255.0.0"
+  #  foreman.vm.network "forwarded_port", guest: 443, host: 7843
+  #  foreman.vm.network "forwarded_port", guest: 80, host: 7880
+  #  foreman.vm.provider "virtualbox" do |vb|
+  #    vb.name = "foreman02.ubelix.unibe.ch"
+  #    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  #    vb.customize ["modifyvm", :id, "--name", "foreman02"]
+  #    vb.customize ["modifyvm", :id, "--memory", "2048"]
+  #    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+  #  end
+  #  foreman.vm.provision :hosts
+  #  #foreman.vm.provision "shell", path: "puppetenv/bin/bootstrap_server.sh"
+  #  #foreman.vm.provision "shell", path: "puppetenv/bin/install_foreman.sh", args: "/vagrant/puppetenv/bin/foreman-installer-answers-ubelix.yaml 1"
+  #end
 
   config.vm.define "puppet" do |puppet|
-    puppet.vm.host_name = "puppetserver01.ubelix.unibe.ch"
-    puppet.vm.network "private_network", ip: "10.1.128.28", netmask: "255.255.0.0"
+    puppet.vm.host_name = "puppet01.ubelix.unibe.ch"
+    puppet.vm.network "private_network", ip: "10.1.128.31", netmask: "255.255.0.0"
     #puppet.vm.network "forwarded_port", guest: 443, host: 7843
     #puppet.vm.network "forwarded_port", guest: 80, host: 7880
     puppet.vm.provider "virtualbox" do |vb|
-      vb.name = "puppetserver01.ubelix.unibe.ch"
+      vb.name = "puppet01.ubelix.unibe.ch"
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--name", "puppetserver01"]
       vb.customize ["modifyvm", :id, "--memory", "2048"]
@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "puppetdb" do |puppetdb|
     puppetdb.vm.host_name = "puppetdb01.ubelix.unibe.ch"
-    puppetdb.vm.network "private_network", ip: "10.1.128.29", netmask: "255.255.0.0"
+    puppetdb.vm.network "private_network", ip: "10.1.128.33", netmask: "255.255.0.0"
     puppetdb.vm.network "forwarded_port", guest: 8080, host: 7080
     puppetdb.vm.network "forwarded_port", guest: 8081, host: 7081
     puppetdb.vm.provider "virtualbox" do |vb|
