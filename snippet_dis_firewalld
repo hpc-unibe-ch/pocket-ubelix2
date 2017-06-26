@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Disable firewalld; firewalls managed elsehwere
-systemctl stop  firewalld.service
-systemctl disable firewalld.service
-
-echo "Firewalld stopped and disabled."
-
