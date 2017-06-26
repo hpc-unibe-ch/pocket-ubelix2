@@ -3,8 +3,9 @@
 set -e
 
 # Source settings and common functions
-source $(dirname $(realpath $0))/shellfunctions.sh
-source $(dirname $(realpath $0))/settings.conf
+workdir=$(dirname -- $(readlink -f $0))
+source $workdir/shellfunctions.sh
+source $workdir/settings.conf
 
 if ! which puppet >/dev/null 2>&1
 then
@@ -15,8 +16,8 @@ fi
 if ! rpm -qa | grep puppetdb >/dev/null 2>&1
 then
   # We want several hostnames in the certificate for puppetdb.
-  # Rollingn out static puppet agent config from installer.
-  cp $(dirname $(realpath $0))/resources/puppet.conf.puppetdb $(puppet config print config)
+  # Rolling out static puppet agent config from installer.
+  cp $workdir/resources/puppet.conf.puppetdb $(puppet config print config)
 
   info "About to run puppet agent for the first time."
   info "Certificate signing on the puppet master is needed."

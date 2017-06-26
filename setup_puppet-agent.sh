@@ -3,8 +3,9 @@
 set -e
 
 # Source settings and common functions
-source $(dirname $0)/shellfunctions.sh
-source $(dirname $0)/settings.conf
+workdir=$(dirname -- $(readlink -f $0))
+source $workdir/shellfunctions.sh
+source $workdir/settings.conf
 
 if ! rpm -qa | grep puppetlabs-release-$PUPCOL_VER >/dev/null 2>&1; then
   info "Installing puppet collection repo. This may take a while."
@@ -32,7 +33,8 @@ fi
 
 info "Now add dns_alt_names if necessary (puppetdb/foreman)"
 info "and run puppet agent."
-#puppet agent -t --waitforcert 30
+info "If you installed puppet-agent in this run, relogin or run"
+info "source /etc/profile.d/puppet-agent.sh"
 
 exit 0
 
