@@ -33,6 +33,7 @@ fi
 
 info "Now add dns_alt_names if necessary (puppetdb/foreman)"
 info "and run puppet agent."
+echo ""
 info "If you installed puppet-agent in this run, relogin or run"
 info "source /etc/profile.d/puppet-agent.sh"
 
