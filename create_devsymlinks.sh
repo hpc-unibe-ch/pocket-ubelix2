@@ -2,18 +2,18 @@
 
 set -e
 
-if ! type puppet >/dev/null 2>&1
-then
-  echo "Puppet binary not found."
-  exit 1
-fi
-
 # Source preferences and common functions
 workdir=$(dirname -- $(readlink -f $0))
 source $workdir/shellfunctions.sh
 source $workdir/prefs.conf
 prodenv=$(puppet config print environmentpath)/$ENVIRONMENT
 puppetenv_local=$workdir/puppetenv
+
+if ! type puppet >/dev/null 2>&1
+then
+  fail "Puppet binary not found."
+  exit 1
+fi
 
 if [ ! -d /vagrant ]
 then
