@@ -35,7 +35,7 @@ fi
 
 if [ ! -f /etc/profile.d/puppet-agent.sh ]; then
   info "Installing puppet agent."
-  yum -y install puppet-agent >/dev/null
+  yum -y install puppet-agent >/dev/null 2>&1
 
   success "Puppet agent has been installed."
 else

@@ -20,7 +20,7 @@ if ! rpm -qa | grep puppetserver >/dev/null 2>&1; then
   info "Installing puppetserver."
 
   # Install puppetserver and adjust $PATH
-  yum -y install puppetserver >/dev/null
+  yum -y install puppetserver >/dev/null 2>&1
 
   # Lower memory settings in vagrant boxes
   if [ -d /vagrant ]
