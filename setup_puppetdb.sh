@@ -19,8 +19,6 @@ then
 
   csr_attr_file=$confdir/csr_attributes.yaml
   cat > $csr_attr_file << YAML
-custom_attributes:
-  1.2.840.113549.1.9.7: "$SHARED_SECRET"
 extension_requests:
   pp_role: "infraserver"
   ux_subrole: "puppetdb"

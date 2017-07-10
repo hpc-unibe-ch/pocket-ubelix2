@@ -54,48 +54,11 @@ YAML
 # Additional csr attributes for the puppetmaster
 csr_attr_file=$confdir/csr_attributes.yaml
 cat > $csr_attr_file << YAML
-custom_attributes:
-  1.2.840.113549.1.9.7: "$SHARED_SECRET"
 extension_requests:
   1.3.6.1.4.1.34380.1.1.13: "infraserver"
   1.3.6.1.4.1.34380.1.2.13: "puppetmaster"
 YAML
 chown puppet:puppet $csr_attr_file
-chmod 640 $csr_attr_file
-
-# autosigning script
-autosign_script=$confdir/check_csr.sh
-cat > $autosign_script <<'EOF'
-#!/usr/bin/env bash
-
-shared_secret="hackmenot"
-
-csr=$(openssl req -noout -text </dev/stdin)
-certname=$1
-
-# Find value of OID $1 in csr
-function extension {
-  echo "$csr" | fgrep -A1 "$1" | tail -n 1 | sed -e 's/^ *//;s/ *$//;s/\.\.//'
-}
-
-psk=$(echo "$csr" | awk '/challengePassword/{print $2}' | cut -c 2-)
-role=$(extension '1.3.6.1.4.1.34380.1.1.13')
-subrole=$(extension '1.3.6.1.4.1.34380.1.2.13')
-
-if [ "$psk" == "$shared_secret" ]
-then
-  echo "Autosign succeeded for ${certname} with role ${role} and subrole ${subrole}."
-  exit 0
-else
-  echo "Autosign failed for ${certname} with role ${role} and subrole ${subrole}."
-  exit 1
-fi
-EOF
-chown puppet:puppet $autosign_script
-chmod 750 $autosign_script
-# Activate autosigining in puppetmaster
-puppet config set --section master autosign $autosign_script
-
 
 # Start the puppetserver but do not yet start puppet-agent
 if ! systemctl status puppetserver.service >/dev/null 2>&1; then
