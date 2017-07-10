@@ -17,7 +17,11 @@ info () {
 }
 
 user () {
-  printf "\r  [ \033[0;33m??\033[0m ] $1"
+  printf "\r  [ \033[00;33m??\033[0m ] $1"
+}
+
+warning () {
+  printf "\r  [ \033[00;33m!!\033[0m ] $1\n"
 }
 
 success () {

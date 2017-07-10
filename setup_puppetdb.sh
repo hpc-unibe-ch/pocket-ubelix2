@@ -2,10 +2,9 @@
 
 set -e
 
-# Source settings and common functions
 workdir=$(dirname -- $(readlink -f $0))
 source $workdir/shellfunctions.sh
-source $workdir/settings.conf
+source $workdir/prefs.conf
 
 if ! which puppet >/dev/null 2>&1
 then
@@ -15,18 +14,26 @@ fi
 
 if ! rpm -qa | grep puppetdb >/dev/null 2>&1
 then
-  # We want several hostnames in the certificate for puppetdb.
-  # Rolling out static puppet agent config from installer.
-  cp $workdir/resources/puppet.conf.puppetdb $(puppet config print config)
+  puppet config set --section main server "${MASTER_HOST}"
+  puppet config set --section main environment "${ENVIRONMENT}"
 
-  info "About to run puppet agent for the first time."
-  info "Certificate signing on the puppet master is needed."
-  prompt_confirm "Ready to sign the certificate?"
+  csr_attr_file=$confdir/csr_attributes.yaml
+  cat > $csr_attr_file << YAML
+custom_attributes:
+  1.2.840.113549.1.9.7: "$SHARED_SECRET"
+extension_requests:
+  pp_role: "infraserver"
+  ux_subrole: "puppetdb"
+YAML
+  chown puppet:puppet $csr_attr_file
+  chmod 640 $csr_attr_file
 
-  puppet agent -t --waitforcert 10
-  #if devenv
-  #sed -i 's/Xms2g/Xms1g/' /etc/sysconfig/puppetserver
-  #sed -i 's/Xmx2g/Xmx1g/' /etc/sysconfig/puppetserver
+  #info "About to run puppet agent for the first time."
+  #info "Certificate signing on the puppet master is needed."
+  #prompt_confirm "Ready to sign the certificate?"
+
+  puppet agent -t --waitforcert 3
+
   success "PuppetDB has been installed."
 else
   info "PuppetDB is already installed."

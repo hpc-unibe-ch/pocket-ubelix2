@@ -1,2 +1,3 @@
 .vagrant
 modules/*
+puppetenv/*

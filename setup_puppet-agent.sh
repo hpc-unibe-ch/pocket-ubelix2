@@ -2,10 +2,9 @@
 
 set -e
 
-# Source settings and common functions
 workdir=$(dirname -- $(readlink -f $0))
 source $workdir/shellfunctions.sh
-source $workdir/settings.conf
+source $workdir/prefs.conf
 
 if ! rpm -qa | grep puppetlabs-release-$PUPCOL_VER >/dev/null 2>&1; then
   info "Installing puppet collection repo. This may take a while."
@@ -25,17 +24,16 @@ else
   success "Puppet agent is already installed."
 fi
 
+
 if ! which puppet >/dev/null 2>&1
 then
   info "To use puppet source the profile file or relogin:"
   info "$ source /etc/profile.d/puppet-agent.sh\n"
 fi
 
-info "Now add dns_alt_names if necessary (puppetdb/foreman)"
+info "Now add dns_alt_names if necessary,"
+info "place a csr_attributes.yaml to \$confdir,"
 info "and run puppet agent."
-echo ""
-info "If you installed puppet-agent in this run, relogin or run"
-info "source /etc/profile.d/puppet-agent.sh"
 
 exit 0
 
