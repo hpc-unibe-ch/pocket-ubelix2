@@ -83,7 +83,7 @@ chown -R puppet:puppet $eyaml_keydir
 chmod -R 0500 $eyaml_keydir
 
 # Config for standalone usage on cli
-mkdir $eyaml_confdir
+mkdir -p $eyaml_confdir
 cat << EOF > $eyaml_confdir/config.yaml
 pkcs7_private_key: '${eyaml_keydir}/private_key.pkcs7.pem'
 pkcs7_public_key: '${eyaml_keydir}/public_key.pkcs7.pem'
