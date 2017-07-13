@@ -23,13 +23,10 @@ fi
 
 if [ ! -d $prodenv/modules/site ]
 then
-  fail "No puppetenv found in ${workdir}. Have you installed and run r10k yet?"
+  fail "No puppetenv found in ${prodenv}. Have you installed and run r10k yet?"
   exit 1
 fi
 
-echo $prodenv
-echo $puppetenv_local
-exit
 rm -rf $prodenv/hiera.yaml && ln -sf $puppetenv_local/hiera.yaml $prodenv/hiera.yaml
 rm -rf $prodenv/environment.conf && ln -sf $puppetenv_local/environment.conf $prodenv/environment.conf
 rm -rf $prodenv/data && ln -sf $puppetenv_local/data $prodenv/data
