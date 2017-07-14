@@ -142,12 +142,6 @@ if [ ! -d ~/.ssh/ ]; then
   chmod 700 ~/.ssh/
 fi
 
-if [ ! -f ~/.ssh/ubelix_bitbucket_rsa ]; then
-  cp $workdir/resources/ubelix_bitbucket_rsa ~/.ssh/
-  cp $workdir/resources/ubelix_bitbucket_rsa.pub ~/.ssh/
-  chmod 600 ~/.ssh/ubelix_bitbucket_rsa
-fi
-
 if ! grep "idos-code" ~/.ssh/config >/dev/null; then
   cat << 'EOF' >> ~/.ssh/config
 
@@ -188,6 +182,7 @@ info "    ${eyaml_keydir}/public_key.pkcs7.pem"
 info "* Place public and private key for idos-code connectivity to:"
 info "    /root/.ssh/ubelix_bitbucket_rsa"
 info "    /root/.ssh/ubelix_bitbucket_rsa.pub"
+info "    chmod 600 ~/.ssh/ubelix_bitbucket_rsa"
 info "* Deploy the environemnts by issuing"
 info "    r10k deploy environment -pv"
 info "* Test the setup by issuing"
