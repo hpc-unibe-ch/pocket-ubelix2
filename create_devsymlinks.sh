@@ -28,8 +28,9 @@ then
 fi
 
 rm -rf $prodenv/hiera.yaml && ln -sf $puppetenv_local/hiera.yaml $prodenv/hiera.yaml
-rm -rf $prodenv/environment.conf && ln -sf $puppetenv_local/environment.conf $prodenv/environment.conf
 rm -rf $prodenv/data && ln -sf $puppetenv_local/data $prodenv/data
+rm -rf $prodenv/environment.conf && ln -sf $puppetenv_local/environment.conf $prodenv/environment.conf
+rm -rf $prodenv/Puppetfile && ln -sf $puppetenv_local/Puppetfile $prodenv/Puppetfile
 rm -rf $prodenv/manifests && ln -sf $puppetenv_local/manifests $prodenv/manifests
 rm -rf $prodenv/modules/site && ln -sf $puppetenv_local/modules/site $prodenv/modules/site
 
