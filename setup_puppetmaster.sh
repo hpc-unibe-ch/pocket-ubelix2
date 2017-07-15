@@ -39,7 +39,17 @@ then
   source /etc/profile.d/puppet-agent.sh
 fi
 
+# Setup config paths used later
 confdir=$(puppet config print confdir)
+envpath=$(puppet config print environmentpath)
+
+#
+# Delete global hiera.yaml, use only environment specific data
+# and clear out current environments
+#
+rm -f  $confdir/hiera.yaml
+rm -rf $envpath/*
+
 #
 # Custom mapping for UBELIX subrole
 #
@@ -69,6 +79,19 @@ then
   info "Adjusting heap size for puppetserver."
   sed -i 's/Xms2g/Xms1g/' /etc/sysconfig/puppetserver
   sed -i 's/Xmx2g/Xmx1g/' /etc/sysconfig/puppetserver
+fi
+
+#
+# Regenerate all certificates to pickup extensions
+# for the puppet master.
+#
+if prompt_confirm "Regenerate puppetmaster's CA at $(puppet config print ssldir)?"
+then
+  rm -rf $(puppet config print ssldir)
+  puppet cert list -a >/dev/null
+  puppet master
+  kill -9 $(ps aux  | grep "[p]uppet master" | awk '{print $2}')
+  success "Successfully created now Puppet CA."
 fi
 
 #
@@ -132,7 +155,7 @@ cat << EOF > $R10K_CONFDIR/r10k.yaml
   # branch in /etc/puppetlabs/code/environments
   :ubelix-puppetenv:
     remote: '$PUPPETENV_URL'
-    basedir: '$(puppet config print environmentpath)'
+    basedir: '$envpath'
     prefix: false
 EOF
 
@@ -142,7 +165,7 @@ if [ ! -d ~/.ssh/ ]; then
   chmod 700 ~/.ssh/
 fi
 
-if ! grep "idos-code" ~/.ssh/config >/dev/null; then
+if ! grep "idos-code" ~/.ssh/config >/dev/null 2>&1; then
   cat << 'EOF' >> ~/.ssh/config
 
 Host idos-code.unibe.ch
