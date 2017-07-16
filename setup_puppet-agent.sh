@@ -58,8 +58,8 @@ puppet config set --section agent environment "${ENVIRONMENT}"
 csr_attr_file=$(puppet config print confdir)/csr_attributes.yaml
 cat > $csr_attr_file << YAML
 extension_requests:
-  pp_role: "${role}"
-  ux_subrole: "${subrole}"
+  1.3.6.1.4.1.34380.1.1.13: "${role}"
+  1.3.6.1.4.1.34380.1.2.13: "${subrole}"
 YAML
 
 if [ $params -eq 0 ]
