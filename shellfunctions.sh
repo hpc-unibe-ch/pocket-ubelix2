@@ -33,4 +33,3 @@ fail () {
   echo ''
   exit
 }
-

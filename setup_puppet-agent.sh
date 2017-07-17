@@ -73,4 +73,3 @@ echo ""
 info "Finally run puppet agent if ready."
 
 exit 0
-

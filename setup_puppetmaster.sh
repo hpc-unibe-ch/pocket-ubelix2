@@ -91,7 +91,7 @@ then
   puppet cert list -a >/dev/null
   puppet master
   kill -9 $(ps aux  | grep "[p]uppet master" | awk '{print $2}')
-  success "Successfully created now Puppet CA."
+  success "Successfully created new Puppet CA."
 fi
 
 #
@@ -214,4 +214,3 @@ echo ""
 echo "If everything is ok, then run puppet agent for the first time on puppetmaster before adding nodes."
 
 exit 0
-

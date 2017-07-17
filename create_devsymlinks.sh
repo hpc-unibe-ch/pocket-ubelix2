@@ -36,3 +36,4 @@ rm -rf $prodenv/modules/site && ln -sf $puppetenv_local/modules/site $prodenv/mo
 
 success "Replaced relevant data with content from shared folder."
 
+exit 0
