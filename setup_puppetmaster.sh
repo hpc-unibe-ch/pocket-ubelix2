@@ -116,10 +116,10 @@ EOF
 if ! type eyaml >/dev/null 2>&1; then
   # Install hiera-eyaml gem in appropriate locations;
   # once for cli usage
-  /opt/puppetlabs/puppet/bin/gem install hiera-eyaml >/dev/null
+  /opt/puppetlabs/puppet/bin/gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
   ln -s /opt/puppetlabs/puppet/bin/eyaml /opt/puppetlabs/bin/eyaml
   # once to be used by puppetserver
-  /opt/puppetlabs/bin/puppetserver gem install hiera-eyaml >/dev/null
+  /opt/puppetlabs/bin/puppetserver gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
 fi
 
 # Do not alter global hiera.yaml
@@ -138,7 +138,7 @@ fi
 # Install r10k gem in appropriate location and generate necessary directories.
 if ! type r10k >/dev/null 2>&1
 then
-  /opt/puppetlabs/puppet/bin/gem install r10k >/dev/null
+  /opt/puppetlabs/puppet/bin/gem install r10k --no-ri --no-rdoc >/dev/null
   ln -s /opt/puppetlabs/puppet/bin/r10k /opt/puppetlabs/bin/r10k
   mkdir -p $R10K_CONFDIR
   mkdir -p $R10K_CACHEDIR
@@ -209,8 +209,8 @@ info "    chmod 600 ~/.ssh/ubelix_bitbucket_rsa"
 info "* Deploy the environemnts by issuing"
 info "    r10k deploy environment -pv"
 info "* Test the setup by issuing"
-info "    hiera -d ntp::servers environment=development ::role=infraserver ::subrole=service"
+info "    puppet lookup --node=puppet01.ubelix.unibe.ch ntp::servers"
 echo ""
-echo "If everything is ok, then run puppet agent for the first time on puppetmaster before adding nodes."
+info "If everything is ok, then run puppet agent for the first time on puppetmaster before adding nodes."
 
 exit 0
