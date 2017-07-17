@@ -51,6 +51,13 @@ rm -f  $confdir/hiera.yaml
 rm -rf $envpath/*
 
 #
+# Explicitly set the environment for the puppetmaster
+#
+# All envs are availble, so we can set it in main, which makes
+# puppet lookup as expected!
+puppet config set --section main environment "${ENVIRONMENT}"
+
+#
 # Custom mapping for UBELIX subrole
 #
 cat > $confdir/custom_trusted_oid_mapping.yaml << YAML
