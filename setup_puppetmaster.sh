@@ -53,9 +53,13 @@ rm -rf $envpath/*
 #
 # Explicitly set the environment for the puppetmaster
 #
-# All envs are availble, so we can set it in main, which makes
+# All envs will be availble, so we can set it in main, which makes
 # puppet lookup as expected!
+#
+# Until the first r10k run we fake the environment though.
+#
 puppet config set --section main environment "${ENVIRONMENT}"
+mkdir -p $envpath/$ENVIRONMENT
 
 #
 # Custom mapping for UBELIX subrole
