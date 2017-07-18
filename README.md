@@ -32,6 +32,8 @@ In principle it does so by:
 
 ## Requirements
 
+The following requirements are only when setting up the development environment on your MacBook of choice.
+
 * UBELIX Puppet environment repository (puppetenv)
 * [Vagrant Hosts Plugin](https://github.com/adrienthebo/vagrant-hosts)
 
@@ -79,18 +81,31 @@ Use section main on the puppetmaster.
 
 ### Setting up the puppetmaster
 
+First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
+
+    $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
+    $ cd pocket-ubelix2
+    $ vi prefs.conf
+
 The script 'setup_puppetmaster.sh' interactively installs and configures
 a puppetserver and additional
 
 Follow the last manual steps oulined by the script after its termination, which
 mainly covers setting up priv/pub keys for r10k and eyaml.
 
+Then run `puppet agent -t` for the first time on puppetmaster (before installing any other host!)
+
 ### Setting up other puppet clients
+
+First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
+
+    $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
+    $ cd ppocket-ubelix2
+    $ vi prefs.conf
+
 
 The procedure to provision any other node than the puppetmaster is as follows:
 
-    $ vagrant ssh HOSTNAME
-    $ sudo su -
     $ /vagrant/setup_puppet-agent.sh [ROLE SUBROLE]
     $ puppet agent -t --waitforcert 20
 
