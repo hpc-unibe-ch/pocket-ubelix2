@@ -93,7 +93,26 @@ a puppetserver and additional
 Follow the last manual steps oulined by the script after its termination, which
 mainly covers setting up priv/pub keys for r10k and eyaml.
 
-Then run `puppet agent -t` for the first time on puppetmaster (before installing any other host!)
+Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other host!)**
+
+### Setting up the puppdb host
+
+First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
+
+    $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
+    $ cd ppocket-ubelix2
+    $ vi prefs.conf
+
+
+The procedure to provision the puppetdb is as follows:
+
+    $ /vagrant/setup_puppet-agent.sh infraserver puppetdba
+    $ puppet config set --section main dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb
+    $ puppet agent -t --waitforcert 20
+
+    # On the puppetmaster:
+    $ puppet cert sign HOSTNAME.ubelix.unibe.ch --alow-dns-alt-names
+
 
 ### Setting up other puppet clients
 
@@ -115,13 +134,6 @@ The procedure to provision any other node than the puppetmaster is as follows:
 If you don't specify the role and subrole, which are needed to extend
 the certificate, you have to set those to values in `/etc/puppetlbas/puppet/csr_attributes.yaml`
 by hand **before** running `puppet agent -t`.
-
-**Notice:** For the **puppetdb server** there's one additional step
-before running `puppet agent -t` the first time. The certificate has
-to accept the general CNAME 'puppetdb', therefore the setup_puppet-agent.sh
-script will thell you, which command to run to add this DNS alternative name.
-
-and follow the [puppetenv readme](https://idos-code.unibe.ch/projects/UBELIX/repos/puppetenv/browse) for further instructions.
 
 ## Limitations
 
