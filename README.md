@@ -42,7 +42,7 @@ To setup the above requirements run the following commands from within the tople
 
 ## Usage
 
-### Starting machines
+### Starting machines in general
 
 If requirements above are in place, it's time to fire up the environment:
 
@@ -56,6 +56,26 @@ Now login to the puppet box:
 To see the list of available host run
 
     $ vagrant status
+
+### The prefs.conf
+
+Every script is using preferences set in prefs.conf. The most important setting is
+the environemtn setting. This makes every script work on the same environemnt.
+
+Keep in mind that environemnts correspond to branches in the puppetenv repository.
+
+All nodes have their environment set in section `[agent]` of the puppet.conf. Only
+the puppet agent depends on environment on clients. One important exception to this
+rule is the puppetmaster, which must have the environemtn set in section `[main]`.
+This is necessary for the puppet cli tool to be able to lookup hiera data from
+the correct (same as the agent) environment. For a production puppetmaster (and
+hosts) this setting be absent or set to production. In developemnt set it to an
+environemnt desired, i.e.:
+
+    $ puppet config set --section agent environment ubelixng
+
+Use section main on the puppetmaster.
+
 
 ### Setting up the puppetmaster
 
