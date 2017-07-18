@@ -52,7 +52,6 @@ fi
 
 source /etc/profile.d/puppet-agent.sh
 # Configure puppet agent
-puppet config set --section main server "${MASTER_HOST}"
 puppet config set --section agent environment "${ENVIRONMENT}"
 
 csr_attr_file=$(puppet config print confdir)/csr_attributes.yaml
