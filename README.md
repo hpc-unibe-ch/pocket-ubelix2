@@ -7,6 +7,11 @@
 1. [Features](#features)
 1. [Requirements](#requirements)
 1. [Usage](#usage)
+    1. [Starting machines in general](#starting-machines-in-general)
+    1. [The prefs.conf file](#the-prefs-conf-file)
+    1. [Setting up the master host](#setting-up-the-master-host)
+    1. [Setting up the puppetdb host](#setting-up-the-puppetdb-host)
+    1. [Setting up other hosts](#setting-up-other-hosts)
 1. [Copyright Notice](#copyright-notice)
 
 ## Overview
@@ -59,7 +64,7 @@ To see the list of available host run
 
     $ vagrant status
 
-### The prefs.conf
+### The prefs.conf file
 
 Every script is using preferences set in prefs.conf. The most important setting is
 the environemtn setting. This makes every script work on the same environemnt.
@@ -79,7 +84,7 @@ environemnt desired, i.e.:
 Use section main on the puppetmaster.
 
 
-### Setting up the puppetmaster
+### Setting up the master host
 
 First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
 
@@ -114,7 +119,7 @@ The procedure to provision the puppetdb is as follows:
     $ puppet cert sign HOSTNAME.ubelix.unibe.ch --alow-dns-alt-names
 
 
-### Setting up other puppet clients
+### Setting up other hosts
 
 First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
 
