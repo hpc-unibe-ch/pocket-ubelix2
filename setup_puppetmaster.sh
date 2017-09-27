@@ -6,6 +6,14 @@ workdir=$(dirname -- $(readlink -f $0))
 source $workdir/shellfunctions.sh
 source $workdir/prefs.conf
 
+if [ $# -eq 1 ]
+then
+  location="$1"
+else
+  warning "Usage: $0 (local|ubelix)"
+  exit 1
+fi
+
 #
 # Add Puppetlabs yum repository
 #
@@ -69,6 +77,9 @@ oid_mapping:
   1.3.6.1.4.1.34380.1.2.13:
     shortname: 'ux_subrole'
     longname:  'UBELIX subrole'
+  1.3.6.1.4.1.34380.1.2.16:
+    shortname: 'ux_location'
+    longname:  'UBELIX location'
 YAML
 
 #
@@ -79,6 +90,7 @@ cat > $csr_attr_file << YAML
 extension_requests:
   1.3.6.1.4.1.34380.1.1.13: "infraserver"
   1.3.6.1.4.1.34380.1.2.13: "puppetmaster"
+  1.3.6.1.4.1.34380.1.2.16: "${location}"
 YAML
 chown puppet:puppet $csr_attr_file
 

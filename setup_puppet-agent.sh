@@ -50,13 +50,14 @@ role=""
 subrole=""
 if [ $# -gt 0 ]
 then
-  if [ $# -eq 2 ]
+  if [ $# -eq 3 ]
   then
     params=1
     role="$1"
     subrole="$2"
+    location="$3"
   else
-    warning "Usage: $0 [role subrole]"
+    warning "Usage: $0 [role subrole [(local|ubelix)]"
     exit 1
   fi
 fi
@@ -97,6 +98,7 @@ cat > $csr_attr_file << YAML
 extension_requests:
   1.3.6.1.4.1.34380.1.1.13: "${role}"
   1.3.6.1.4.1.34380.1.2.13: "${subrole}"
+  1.3.6.1.4.1.34380.1.2.16: "${location}"
 YAML
 
 if [ $params -eq 0 ]
