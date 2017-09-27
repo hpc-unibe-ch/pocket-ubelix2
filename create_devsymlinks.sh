@@ -33,6 +33,7 @@ rm -rf $prodenv/environment.conf && ln -sf $puppetenv_local/environment.conf $pr
 rm -rf $prodenv/Puppetfile && ln -sf $puppetenv_local/Puppetfile $prodenv/Puppetfile
 rm -rf $prodenv/manifests && ln -sf $puppetenv_local/manifests $prodenv/manifests
 rm -rf $prodenv/modules/site && ln -sf $puppetenv_local/modules/site $prodenv/modules/site
+rm -rf $prodenv/modules/repo_ubelix && ln -sf $puppetenv_local/modules/repo_ubelix $prodenv/modules/repo_ubelix
 
 success "Replaced relevant data with content from shared folder."
 
