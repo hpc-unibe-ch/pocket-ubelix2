@@ -2,9 +2,51 @@
 
 set -e
 
+# Settings; change to your needs
+ELMAJ_VER="7"
+PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
+PUP_ENV="ubelixng"
+PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/puppetenv.git"
+R10K_CONFDIR=/etc/puppetlabs/r10k
+R10K_CACHEDIR=/opt/puppetlabs/r10k/cache
+
+# General functions for output beautification
+prompt_confirm() {
+  while true; do
+    printf "\r  [ \033[0;33m??\033[0m ] ${1:-Continue?} [y/n]: "
+    read -r -n 1 REPLY
+    case $REPLY in
+      [yY]) echo ; return 0 ;;
+      [nN]) echo ; return 1 ;;
+      *) printf " \033[31m %s \n\033[0m" "invalid input"
+    esac
+  done
+}
+
+info () {
+  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+}
+
+user () {
+  printf "\r  [ \033[00;33m??\033[0m ] $1"
+}
+
+warning () {
+  printf "\r  [ \033[00;33m!!\033[0m ] $1\n"
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
+# Setup variables
 workdir=$(dirname -- $(readlink -f $0))
-source $workdir/shellfunctions.sh
-source $workdir/prefs.conf
 
 if [ $# -eq 1 ]
 then
@@ -17,9 +59,9 @@ fi
 #
 # Add Puppetlabs yum repository
 #
-if ! rpm -qa | grep puppetlabs-release-$PUPCOL_VER >/dev/null 2>&1; then
+if ! rpm -qa | grep puppet5-release >/dev/null 2>&1; then
   info "Installing puppet collection repo. This may take a while."
-  yum -y install $PUPCOL_URL >/dev/null
+  yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null
   yum makecache >/dev/null
   success "Puppet collection repo has been installed."
@@ -52,13 +94,6 @@ confdir=$(puppet config print confdir)
 envpath=$(puppet config print environmentpath)
 
 #
-# Delete global hiera.yaml, use only environment specific data
-# and clear out current environments
-#
-rm -f  $confdir/hiera.yaml
-rm -rf $envpath/*
-
-#
 # Explicitly set the environment for the puppetmaster
 #
 # All envs will be availble, so we can set it in main, which makes
@@ -66,20 +101,23 @@ rm -rf $envpath/*
 #
 # Until the first r10k run we fake the environment though.
 #
-puppet config set --section main environment "${ENVIRONMENT}"
-mkdir -p $envpath/$ENVIRONMENT
+puppet config set --section main environment "${PUP_ENV}"
+mkdir -p $envpath/$PUP_ENV
 
 #
 # Custom mapping for UBELIX subrole
 #
 cat > $confdir/custom_trusted_oid_mapping.yaml << YAML
 oid_mapping:
-  1.3.6.1.4.1.34380.1.2.13:
-    shortname: 'ux_subrole'
-    longname:  'UBELIX subrole'
-  1.3.6.1.4.1.34380.1.2.16:
+  1.3.6.1.4.1.34380.1.2.1:
+    shortname: 'ux_role'
+    longname:  'UBELIX Node Role Name'
+  1.3.6.1.4.1.34380.1.2.2:
     shortname: 'ux_location'
-    longname:  'UBELIX location'
+    longname:  'UBELIX Node Location Name'
+  1.3.6.1.4.1.34380.1.2.3:
+    shortname: 'ux_tribe'
+    longname:  'UBELIX Node Tribe Name'
 YAML
 
 #
@@ -88,9 +126,9 @@ YAML
 csr_attr_file=$confdir/csr_attributes.yaml
 cat > $csr_attr_file << YAML
 extension_requests:
-  1.3.6.1.4.1.34380.1.1.13: "infraserver"
-  1.3.6.1.4.1.34380.1.2.13: "puppetmaster"
-  1.3.6.1.4.1.34380.1.2.16: "${location}"
+  1.3.6.1.4.1.34380.1.2.1: "puppetmaster"
+  1.3.6.1.4.1.34380.1.2.2: "${location}"
+  1.3.6.1.4.1.34380.1.2.3: "infraserver"
 YAML
 chown puppet:puppet $csr_attr_file
 
@@ -177,7 +215,7 @@ cat << EOF > $R10K_CONFDIR/r10k.yaml
   # This will clone the git repository and instantiate an environment per
   # branch in /etc/puppetlabs/code/environments
   :ubelix-puppetenv:
-    remote: '$PUPPETENV_URL'
+    remote: '$PUP_ENV_URL'
     basedir: '$envpath'
     prefix: false
 EOF
@@ -212,7 +250,7 @@ success "R10K is now setup and configured"
 # Start/restart the puppetserver but do not yet start puppet-agent
 #
 if ! systemctl status puppetserver.service >/dev/null 2>&1; then
-  systemctl enable puppetserver.service
+  systemctl enable puppetserver.service >/dev/null
   systemctl start puppetserver.service
   success "Puppet server has been started."
 else

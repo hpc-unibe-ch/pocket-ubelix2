@@ -2,12 +2,10 @@
 
 set -e
 
+# Settings; change to your needs
 ELMAJ_VER="7"
-PUPCOL_VER="pc1"
-PUPCOL_URL="http://yum.puppetlabs.com/puppetlabs-release-${PUPCOL_VER}-el-${ELMAJ_VER}.noarch.rpm"
-ENVIRONMENT="ubelixng"
-
-workdir=$(dirname -- $(readlink -f $0))
+PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
+PUP_ENV="ubelixng"
 
 # General functions used in shell scripts
 prompt_confirm() {
@@ -44,27 +42,26 @@ fail () {
   exit
 }
 
+workdir=$(dirname -- $(readlink -f $0))
+
 # Argument validation
 params=0
 role=""
-subrole=""
-if [ $# -gt 0 ]
+tribe=""
+if [ $# -eq 3 ]
 then
-  if [ $# -eq 3 ]
-  then
-    params=1
-    role="$1"
-    subrole="$2"
-    location="$3"
-  else
-    warning "Usage: $0 [role subrole [(local|ubelix)]"
-    exit 1
-  fi
+  params=1
+  role="$1"
+  tribe="$2"
+  location="$3"
+else
+  warning "Usage: $0 [role tribe [(local|ubelix)]"
+  exit 1
 fi
 
-if ! rpm -qa | grep puppetlabs-release-$PUPCOL_VER >/dev/null 2>&1; then
+if ! rpm -qa | grep puppet5-release >/dev/null 2>&1; then
   info "Installing puppet collection repo. This may take a while."
-  yum -y install $PUPCOL_URL >/dev/null
+  yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null
   yum makecache >/dev/null
   success "Puppet collection repo has been installed."
@@ -91,19 +88,20 @@ fi
 
 source /etc/profile.d/puppet-agent.sh
 # Configure puppet agent
-puppet config set --section agent environment "${ENVIRONMENT}"
+puppet config set --section agent environment "${PUP_ENV}"
 
-csr_attr_file=$(puppet config print confdir)/csr_attributes.yaml
+confdir=$(puppet config print confdir)
+csr_attr_file=$confdir/csr_attributes.yaml
 cat > $csr_attr_file << YAML
 extension_requests:
-  1.3.6.1.4.1.34380.1.1.13: "${role}"
-  1.3.6.1.4.1.34380.1.2.13: "${subrole}"
-  1.3.6.1.4.1.34380.1.2.16: "${location}"
+  1.3.6.1.4.1.34380.1.2.1: "${role}"
+  1.3.6.1.4.1.34380.1.2.2: "${location}"
+  1.3.6.1.4.1.34380.1.2.3: "${tribe}"
 YAML
 
 if [ $params -eq 0 ]
 then
-  warning "You have to fill in role and subrole in ${csr_attr_file} or puppet will fail."
+  warning "You have to fill in role and tribe in ${csr_attr_file} or puppet will fail."
 fi
 
 info "If necessary, add dns_alt_naes to section main of ${confdir}/puppet.conf, i.e.:"
