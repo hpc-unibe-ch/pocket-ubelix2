@@ -5,7 +5,7 @@ set -e
 # Settings; change to your needs
 ELMAJ_VER="7"
 PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
-PUP_ENV="ubelixng"
+PUP_ENV="development"
 
 # General functions used in shell scripts
 prompt_confirm() {
@@ -45,17 +45,15 @@ fail () {
 workdir=$(dirname -- $(readlink -f $0))
 
 # Argument validation
-params=0
 role=""
 tribe=""
 if [ $# -eq 3 ]
 then
-  params=1
   role="$1"
   tribe="$2"
   location="$3"
 else
-  warning "Usage: $0 [role tribe [(local|ubelix)]"
+  warning "Usage: $0 \$role \$tribe (local|ubelix)"
   exit 1
 fi
 
@@ -98,11 +96,6 @@ extension_requests:
   1.3.6.1.4.1.34380.1.2.2: "${location}"
   1.3.6.1.4.1.34380.1.2.3: "${tribe}"
 YAML
-
-if [ $params -eq 0 ]
-then
-  warning "You have to fill in role and tribe in ${csr_attr_file} or puppet will fail."
-fi
 
 info "If necessary, add dns_alt_naes to section main of ${confdir}/puppet.conf, i.e.:"
 info "$ puppet config set --section main dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb"

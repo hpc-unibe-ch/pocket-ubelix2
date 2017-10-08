@@ -5,8 +5,8 @@ set -e
 # Settings; change to your needs
 ELMAJ_VER="7"
 PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
-PUP_ENV="ubelixng"
-PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/puppetenv.git"
+PUP_ENV="development"
+PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
 R10K_CONFDIR=/etc/puppetlabs/r10k
 R10K_CACHEDIR=/opt/puppetlabs/r10k/cache
 
@@ -214,7 +214,7 @@ cat << EOF > $R10K_CONFDIR/r10k.yaml
 :sources:
   # This will clone the git repository and instantiate an environment per
   # branch in /etc/puppetlabs/code/environments
-  :ubelix-puppetenv:
+  :ubelix-controlrepo:
     remote: '$PUP_ENV_URL'
     basedir: '$envpath'
     prefix: false
@@ -250,7 +250,7 @@ success "R10K is now setup and configured"
 # Start/restart the puppetserver but do not yet start puppet-agent
 #
 if ! systemctl status puppetserver.service >/dev/null 2>&1; then
-  systemctl enable puppetserver.service >/dev/null
+  systemctl enable puppetserver.service >/dev/null 2>&1
   systemctl start puppetserver.service
   success "Puppet server has been started."
 else
@@ -260,7 +260,7 @@ fi
 
 info "The follwoing actions are not automatically done. Do them now:"
 echo ""
-info "* Relogin or source the following file to have everything in $PATH"
+info "* Relogin or source the following file to have everything in \$PATH"
 info "    source /etc/profile.d/puppet-agent.sh"
 echo ""
 info "* Place public and private key for eyaml encryption to:"
@@ -273,9 +273,9 @@ info "    /root/.ssh/ubelix_bitbucket_rsa.pub"
 info "    chmod 600 ~/.ssh/ubelix_bitbucket_rsa"
 echo ""
 info "* Deploy the environemnts by issuing"
-info "    r10k deploy environment -pv"
+info "    r10k deploy environment [development] -pv"
 echo ""
-info "* If you are working locally, setup devymlinks to /vagrant:"
+info "* If you are working locally, setup devsymlinks to /vagrant:"
 info "    /vagrant/create_devsymlinks.sh"
 echo ""
 info "* Test the setup by issuing"

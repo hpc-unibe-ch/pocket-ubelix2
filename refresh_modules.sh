@@ -20,9 +20,9 @@ then
   exit 1
 fi
 
-if [ ! -d $prodenv/modules/site ]
+if [ ! -d $prodenv/site ]
 then
-  fail "No puppetenv found in ${prodenv}. Have you installed and run r10k yet?"
+  fail "No controlrepo found in ${prodenv}. Have you installed and run r10k yet?"
   exit 1
 fi
 

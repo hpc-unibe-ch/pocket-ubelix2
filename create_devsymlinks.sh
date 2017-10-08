@@ -3,7 +3,7 @@
 set -e
 
 # Settings; change to your needs
-PUP_ENV=ubelixng
+PUP_ENV=development
 
 # General functions for output beautification
 prompt_confirm() {
@@ -56,22 +56,23 @@ fi
 # Setup variables
 workdir=$(dirname -- $(readlink -f $0))
 prodenv=$(puppet config print environmentpath)/$PUP_ENV
-puppetenv_local=$workdir/puppetenv
+controlrepo_local=$workdir/controlrepo
 
-if [ ! -d $prodenv/modules/site ]
+if [ ! -d $prodenv/site ]
 then
-  fail "No puppetenv found in ${prodenv}. Have you installed and run r10k yet?"
+  fail "No controlrepo found in ${prodenv}. Have you installed and run r10k yet?"
   exit 1
 fi
 
-rm -rf $prodenv/hiera.yaml && ln -sf $puppetenv_local/hiera.yaml $prodenv/hiera.yaml
-rm -rf $prodenv/data && ln -sf $puppetenv_local/data $prodenv/data
-rm -rf $prodenv/environment.conf && ln -sf $puppetenv_local/environment.conf $prodenv/environment.conf
-rm -rf $prodenv/Puppetfile && ln -sf $puppetenv_local/Puppetfile $prodenv/Puppetfile
-rm -rf $prodenv/manifests && ln -sf $puppetenv_local/manifests $prodenv/manifests
-rm -rf $prodenv/modules/site && ln -sf $puppetenv_local/modules/site $prodenv/modules/site
-rm -rf $prodenv/modules/repo_ubelix && ln -sf $puppetenv_local/modules/repo_ubelix $prodenv/modules/repo_ubelix
+rm -rf $prodenv/data && ln -sf $controlrepo_local/data $prodenv/data
+rm -rf $prodenv/manifests && ln -sf $controlrepo_local/manifests $prodenv/manifests
+rm -rf $prodenv/scripts && ln -sf $controlrepo_local/scripts $prodenv/scripts
+rm -rf $prodenv/environment.conf && ln -sf $controlrepo_local/environment.conf $prodenv/environment.conf
+rm -rf $prodenv/hiera.yaml && ln -sf $controlrepo_local/hiera.yaml $prodenv/hiera.yaml
+rm -rf $prodenv/Puppetfile && ln -sf $controlrepo_local/Puppetfile $prodenv/Puppetfile
 
 success "Replaced relevant data with content from shared folder."
+echo ""
+info "If you want to locally work on a module, just add a symlink the same way in modules/."
 
 exit 0

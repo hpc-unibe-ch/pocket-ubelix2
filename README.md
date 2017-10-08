@@ -21,7 +21,7 @@ This repository delivers measures to setup a puppet development environment loca
 ## Description
 
 By default the environment can setup a number of maschines - at least for every subrole used in
-UBELIX and where it makes sense additional ones. This mimic UBELIX' infrastructure. Additionally
+UBELIX and where it makes sense additional ones. This mimics UBELIX' infrastructure. Additionally
 it features bash scripts to setup a puppetmaster and to provision puppet on all other machines.
 The puppetmaster then enables testing of puppet/hiera code before rolling out to UBELIX.
 
@@ -37,7 +37,7 @@ In principle it does so by:
 
 ## Requirements
 
-The following requirements are only when setting up the development environment on your MacBook of choice.
+The following requirements are only of importance  when setting up the development environment on your MacBook of choice.
 
 * UBELIX Puppet environment repository (puppetenv)
 * [Vagrant Hosts Plugin](https://github.com/adrienthebo/vagrant-hosts)
@@ -64,10 +64,11 @@ To see the list of available host run
 
     $ vagrant status
 
-### The prefs.conf file
+### Configuring the different scripts
 
-Every script is using preferences set in prefs.conf. The most important setting is
-the environemtn setting. This makes every script work on the same environemnt.
+Every script has some variables at the top to configure its behaviour. As of this
+writing the defaults will install Puppet-5.3.x and checkout the development branch
+of the ubelix control repository.
 
 Keep in mind that environemnts correspond to branches in the puppetenv repository.
 
@@ -79,58 +80,64 @@ the correct (same as the agent) environment. For a production puppetmaster (and
 hosts) this setting be absent or set to production. In developemnt set it to an
 environemnt desired, i.e.:
 
-    $ puppet config set --section agent environment ubelixng
+    $ puppet config set --section agent environment development
 
 Use section main on the puppetmaster.
 
 
 ### Setting up the master host
 
-First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
+First clone the pocket-ubelix2 repository and adjust the settings in the scripts. This first
+step can be ommited in a development environment locally the repo is already mounted in the
+virtual hosts at /vagrant.
 
     $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
     $ cd pocket-ubelix2
-    $ vi prefs.conf
 
 The script 'setup_puppetmaster.sh' interactively installs and configures
-a puppetserver and additional
+a puppetserver and additional things like r10k and eyaml.
 
-Follow the last manual steps oulined by the script after its termination, which
+    $ /vagrant/setup_puppetmaster (local|ubelix)
+
+Follow the last manual steps outlined by the script after its termination, which
 mainly covers setting up priv/pub keys for r10k and eyaml.
 
 Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other host!)**
 
-### Setting up the puppdb host
+CAVE: If puppet agent is not run at least once on the puppetmaster, then other hosts cannot connect
+because the firewall is closed.
 
-First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
+### Setting up the puppetdb host
+
+First clone the pocket-ubelix2 repository and adjust the settings in the scripts. This first
+step can be ommited in a development environment locally the repo is already mounted in the
+virtual hosts at /vagrant.
 
     $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
-    $ cd ppocket-ubelix2
-    $ vi prefs.conf
-
+    $ cd pocket-ubelix2
 
 The procedure to provision the puppetdb is as follows:
 
-    $ /vagrant/setup_puppet-agent.sh infraserver puppetdba
+    $ /vagrant/setup_puppet-agent.sh puppetdb infraserver (local|ubelix)
     $ puppet config set --section main dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb
     $ puppet agent -t --waitforcert 20
 
     # On the puppetmaster:
-    $ puppet cert sign HOSTNAME.ubelix.unibe.ch --alow-dns-alt-names
+    $ puppet cert sign HOSTNAME.ubelix.unibe.ch --allow-dns-alt-names
 
 
 ### Setting up other hosts
 
-First clone the pocket-ubelix2 repository and adjust settings in `prefs.conf`:
+First clone the pocket-ubelix2 repository and adjust the settings in the scripts. This first
+step can be ommited in a development environment locally the repo is already mounted in the
+virtual hosts at /vagrant.
 
     $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
-    $ cd ppocket-ubelix2
-    $ vi prefs.conf
-
+    $ cd pocket-ubelix2
 
 The procedure to provision any other node than the puppetmaster is as follows:
 
-    $ /vagrant/setup_puppet-agent.sh [ROLE SUBROLE]
+    $ setup_puppet-agent.sh $ROLE $TRIBE (local|ubelix)
     $ puppet agent -t --waitforcert 20
 
     # On the puppetmaster:
@@ -144,7 +151,7 @@ by hand **before** running `puppet agent -t`.
 
 All scripts are only tested on the following operating systems:
 
-* CentOS-7.3
+* CentOS-7.4
 
 ## Copyright Notice
 
