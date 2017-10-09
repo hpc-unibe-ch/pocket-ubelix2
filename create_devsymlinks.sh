@@ -67,6 +67,7 @@ fi
 rm -rf $prodenv/data && ln -sf $controlrepo_local/data $prodenv/data
 rm -rf $prodenv/manifests && ln -sf $controlrepo_local/manifests $prodenv/manifests
 rm -rf $prodenv/scripts && ln -sf $controlrepo_local/scripts $prodenv/scripts
+rm -rf $prodenv/site && ln -sf $controlrepo_local/site $prodenv/site
 rm -rf $prodenv/environment.conf && ln -sf $controlrepo_local/environment.conf $prodenv/environment.conf
 rm -rf $prodenv/hiera.yaml && ln -sf $controlrepo_local/hiera.yaml $prodenv/hiera.yaml
 rm -rf $prodenv/Puppetfile && ln -sf $controlrepo_local/Puppetfile $prodenv/Puppetfile
