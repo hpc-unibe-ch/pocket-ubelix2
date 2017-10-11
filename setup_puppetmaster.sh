@@ -105,6 +105,11 @@ puppet config set --section main environment "${PUP_ENV}"
 mkdir -p $envpath/$PUP_ENV
 
 #
+# Enable show_diff to have file diffs; defaults to false
+#
+puppet config set --section main show_diff true
+
+#
 # Custom mapping for UBELIX subrole
 #
 cat > $confdir/custom_trusted_oid_mapping.yaml << YAML
