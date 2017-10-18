@@ -58,7 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
     global.vm.define "gridadmin0#{index}" do |config|
       config.vm.host_name = "gridadmin0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.1.128.5#{index}", netmask: "255.255.0.0"
-      config.vm.network "forwarded_port", guest: 443, host: 8088
+      config.vm.network "forwarded_port", guest: 443, host: 8087 + index
       config.vm.provider "virtualbox" do |vb|
         vb.name = "gridadmin0#{index}.ubelix.unibe.ch"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
