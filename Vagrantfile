@@ -171,7 +171,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   (1..2).each do |index|
     global.vm.define "anode00#{index}" do |config|
       config.vm.host_name = "anode00#{index}.ubelix.unibe.ch"
-      config.vm.network "private_network", ip: "10.1.11.#{index}", netmask: "255.255.0.0"
+      config.vm.network "private_network", ip: "10.1.2.#{index}", netmask: "255.255.0.0"
       config.vm.provider "virtualbox" do |vb|
         vb.name = "anode00#{index}"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
