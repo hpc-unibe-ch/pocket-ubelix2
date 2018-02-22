@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.name = "service0#{index}.ubelix.unibe.ch"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--name", "service0#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
@@ -63,7 +63,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.name = "gridadmin0#{index}.ubelix.unibe.ch"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--name", "gridadmin0#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
@@ -77,7 +77,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       config.vm.provider "virtualbox" do |vb|
         vb.name = "lrms0#{index}"
         vb.customize ["modifyvm", :id, "--name", "lrms0#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
@@ -92,7 +92,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.name = "nfs01.ubelix.unibe.ch"
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--name", "nfs01"]
-      vb.customize ["modifyvm", :id, "--memory", "512"]
+      vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
     config.vm.provision :hosts, :sync_hosts => true
@@ -131,7 +131,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.name = "submit-config.ubelix.unibe.ch"
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--name", "submit-lb"]
-      vb.customize ["modifyvm", :id, "--memory", "512"]
+      vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
     config.vm.provision :hosts, :sync_hosts => true
@@ -145,7 +145,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.name = "submit0#{index}.ubelix.unibe.ch"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--name", "submit0#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
@@ -159,7 +159,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.name = "grid01.ubelix.unibe.ch"
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--name", "grid01"]
-      vb.customize ["modifyvm", :id, "--memory", "512"]
+      vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
     config.vm.provision :hosts, :sync_hosts => true
@@ -176,7 +176,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.name = "anode00#{index}"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--name", "anode00#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
@@ -191,7 +191,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.name = "knode0#{index}"
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--name", "knode0#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
