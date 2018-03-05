@@ -94,14 +94,16 @@ confdir=$(puppet config print confdir)
 envpath=$(puppet config print environmentpath)
 
 #
-# Explicitly set the environment for the puppetmaster
+# Explicitly set the environment, see
+# https://puppet.com/docs/puppet/latest/configuration.html#environment
 #
-# All envs will be availble, so we can set it in main, which makes
-# puppet lookup as expected!
+# We set agent and user, as those are relevant and must be available
+# locall.
 #
 # Until the first r10k run we fake the environment though.
 #
-puppet config set --section main environment "${PUP_ENV}"
+puppet config set --section agent environment "${PUP_ENV}"
+puppet config set --section user environment "${PUP_ENV}"
 mkdir -p $envpath/$PUP_ENV
 
 #
