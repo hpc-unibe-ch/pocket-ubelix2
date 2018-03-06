@@ -97,11 +97,12 @@ envpath=$(puppet config print environmentpath)
 # Explicitly set the environment, see
 # https://puppet.com/docs/puppet/latest/configuration.html#environment
 #
-# We set agent and user, as those are relevant and must be available
-# locall.
+# We set master, agent and user, as those are relevant and must be available
+# in locally.
 #
-# Until the first r10k run we fake the environment though.
+# Until the first r10k run we fake the environment directory  though.
 #
+puppet config set --section master environment "${PUP_ENV}"
 puppet config set --section agent environment "${PUP_ENV}"
 puppet config set --section user environment "${PUP_ENV}"
 mkdir -p $envpath/$PUP_ENV
