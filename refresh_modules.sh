@@ -6,7 +6,7 @@ set -e
 workdir=$(dirname -- $(readlink -f $0))
 source $workdir/shellfunctions.sh
 source $workdir/prefs.conf
-prodenv=$(puppet config print environmentpath)/$ENVIRONMENT
+prodenv=$(puppet config print environmentpath --section main)/$ENVIRONMENT
 
 if ! type puppet >/dev/null 2>&1
 then

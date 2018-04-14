@@ -55,7 +55,7 @@ fi
 
 # Setup variables
 workdir=$(dirname -- $(readlink -f $0))
-prodenv=$(puppet config print environmentpath)/$PUP_ENV
+prodenv=$(puppet config print environmentpath --section main)/$PUP_ENV
 controlrepo_local=$workdir/controlrepo
 
 if [ ! -d $prodenv/site ]

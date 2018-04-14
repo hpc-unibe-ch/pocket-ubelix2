@@ -90,8 +90,8 @@ then
 fi
 
 # Setup config paths used later
-confdir=$(puppet config print confdir)
-envpath=$(puppet config print environmentpath)
+confdir=$(puppet config print confdir --section main)
+envpath=$(puppet config print environmentpath --section main)
 
 #
 # Explicitly set the environment, see
@@ -102,15 +102,15 @@ envpath=$(puppet config print environmentpath)
 #
 # Until the first r10k run we fake the environment directory  though.
 #
-puppet config set --section master environment "${PUP_ENV}"
-puppet config set --section agent environment "${PUP_ENV}"
-puppet config set --section user environment "${PUP_ENV}"
+puppet config set environment "${PUP_ENV}" --section master
+puppet config set environment "${PUP_ENV}" --section agent
+puppet config set environment "${PUP_ENV}" --section user
 mkdir -p $envpath/$PUP_ENV
 
 #
 # Enable show_diff to have file diffs; defaults to false
 #
-puppet config set --section main show_diff true
+puppet config set show_diff true --section main
 
 #
 # Custom mapping for UBELIX subrole
@@ -154,12 +154,13 @@ fi
 # Regenerate all certificates to pickup extensions
 # for the puppet master.
 #
-if prompt_confirm "Regenerate puppetmaster's CA at $(puppet config print ssldir)?"
+ssldir=$(puppet config --section main print ssldir)
+if prompt_confirm "Destroy puppetmaster's CA and create new CA at ${ssldir}?"
 then
-  rm -rf $(puppet config print ssldir)
+  rm -rf "${ssldir}"
   puppet cert list -a >/dev/null
   puppet master
-  kill -9 $(ps aux  | grep "[p]uppet master" | awk '{print $2}')
+  kill -9 $(ps aux  | grep "[p]uppetserver" | awk '{print $2}')
   success "Successfully created new Puppet CA."
 fi
 

@@ -86,9 +86,9 @@ fi
 
 source /etc/profile.d/puppet-agent.sh
 # Configure puppet agent
-puppet config set --section agent environment "${PUP_ENV}"
+puppet config set environment "${PUP_ENV}" --section agent
 
-confdir=$(puppet config print confdir)
+confdir=$(puppet config print confdir --section main)
 csr_attr_file=$confdir/csr_attributes.yaml
 cat > $csr_attr_file << YAML
 extension_requests:
@@ -98,7 +98,7 @@ extension_requests:
 YAML
 
 info "If necessary, add dns_alt_naes to section main of ${confdir}/puppet.conf, i.e.:"
-info "$ puppet config set --section main dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb"
+info "$ puppet config set dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb --section main"
 echo ""
 info "Finally run puppet agent if ready."
 
