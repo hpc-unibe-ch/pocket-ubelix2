@@ -160,7 +160,7 @@ then
   rm -rf "${ssldir}"
   puppet cert list -a >/dev/null
   puppet master
-  kill -9 $(ps aux  | grep "[p]uppetserver" | awk '{print $2}')
+  kill -9 $(ps aux  | grep "[p]uppet master" | awk '{print $2}')
   success "Successfully created new Puppet CA."
 fi
 
