@@ -6,6 +6,8 @@ set -e
 ELMAJ_VER="7"
 PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
 PUP_ENV="development"
+PUP_RUNINTERVAL="3600" # 60m
+PUP_RUNTIMEOUT="2700"  # 45m
 
 # General functions used in shell scripts
 prompt_confirm() {
@@ -86,7 +88,9 @@ fi
 
 source /etc/profile.d/puppet-agent.sh
 # Configure puppet agent
-puppet config set environment "${PUP_ENV}" --section agent
+puppet config set environment "${PUP_ENV}"         --section agent
+puppet config set runinterval "${PUP_RUNINTERVAL}" --section agent
+puppet config set runtimeout  "${PUP_RUNTIMEOUT}"  --section agent
 
 confdir=$(puppet config print confdir --section main)
 csr_attr_file=$confdir/csr_attributes.yaml
