@@ -29,6 +29,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   global.vm.define "puppetdb" do |config|
     config.vm.host_name = "puppetdb01.ubelix.unibe.ch"
     config.vm.network "private_network", ip: "10.1.128.33", netmask: "255.255.0.0"
+    # Puppet dashboard port forwarding
+    config.vm.network "forwarded_port", guest: 5000, host: 5000
     config.vm.provider "virtualbox" do |vb|
       vb.name = "puppetdb01.ubelix.unibe.ch"
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
