@@ -4,10 +4,11 @@ set -e
 
 # Settings; change to your needs
 ELMAJ_VER="7"
-PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
-PUP_ENV="development"
-PUP_RUNINTERVAL="3600" # 60m
-PUP_RUNTIMEOUT="2700"  # 45m
+PUP_VER="6"
+PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
+PUP_ENV="production"
+PUP_RUNINTERVAL="7200" # 2h
+PUP_RUNTIMEOUT="900"  # 15m
 
 # General functions used in shell scripts
 prompt_confirm() {
@@ -59,7 +60,7 @@ else
   exit 1
 fi
 
-if ! rpm -qa | grep puppet5-release >/dev/null 2>&1; then
+if ! rpm -qa | grep puppet${PUP_VER}-release >/dev/null 2>&1; then
   info "Installing puppet collection repo. This may take a while."
   yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null

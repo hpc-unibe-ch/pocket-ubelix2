@@ -4,8 +4,9 @@ set -e
 
 # Settings; change to your needs
 ELMAJ_VER="7"
-PUP_URL="https://yum.puppetlabs.com/puppet5/puppet5-release-el-${ELMAJ_VER}.noarch.rpm"
-PUP_ENV="development"
+PUP_VER="6"
+PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
+PUP_ENV="production"
 PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
 R10K_CONFDIR=/etc/puppetlabs/r10k
 R10K_CACHEDIR=/opt/puppetlabs/r10k/cache
@@ -59,7 +60,7 @@ fi
 #
 # Add Puppetlabs yum repository
 #
-if ! rpm -qa | grep puppet5-release >/dev/null 2>&1; then
+if ! rpm -qa | grep puppet6-release >/dev/null 2>&1; then
   info "Installing puppet collection repo. This may take a while."
   yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null
