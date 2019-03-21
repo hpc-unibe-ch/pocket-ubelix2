@@ -4,9 +4,9 @@ set -e
 
 # Settings; change to your needs
 ELMAJ_VER="7"
-PUP_VER="6"
+PUP_VER="5"
 PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
-PUP_ENV="production"
+PUP_ENV="development"
 PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
 R10K_CONFDIR=/etc/puppetlabs/r10k
 R10K_CACHEDIR=/opt/puppetlabs/r10k/cache
