@@ -61,13 +61,13 @@ else
 fi
 
 if ! rpm -qa | grep puppet${PUP_VER}-release >/dev/null 2>&1; then
-  info "Installing puppet collection repo. This may take a while."
+  info "Installing Puppet repository. This may take a while."
   yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null
   yum makecache >/dev/null
-  success "Puppet collection repo has been installed."
+  success "Puppet repository has been installed."
 else
-  success "Puppet collection repo is already available."
+  success "Puppet repository is already available."
 fi
 
 if [ ! -f /etc/profile.d/puppet-agent.sh ]; then
