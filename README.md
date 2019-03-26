@@ -98,10 +98,12 @@ locally on the laptop:
 1. puppetmaster   (fixes puppetmaster)
 1. puppetdb       (installs puppetdb)
 1. puppetmaster   (connects to puppetdb)
-1. gridamdin01
+1. gridamdin01    (install the jumphost to ssh into the other machines!)
 1. Any host you wish but think about dependencies in UBELIX! Examples:
     - nfs01 before any of lrms01/submit/compute nodes as they mount an nfs share)
     - lrms01 before computed nodes or slurmd won't work out of the box
+
+**CAVE: Do not log out of puppetmaster as long as no jumphost is provisioned. You won't be able to relogin. ;-)**
 
 ### Setting up the master host
 
@@ -123,8 +125,8 @@ mainly covers setting up priv/pub keys for g10k and eyaml.
 Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other
 host!)** The first run will terribly fail, but 
 
-CAVE: If puppet agent is not run at least once on the puppetmaster, then other hosts cannot connect
-because the firewall is closed.
+**CAVE: If puppet agent is not run at least once on the puppetmaster, then other hosts cannot connect
+because the firewall is closed.**
 
 ### Setting up other hosts
 
