@@ -95,12 +95,12 @@ virtual hosts at /vagrant.
     $ cd pocket-ubelix2
 
 The script 'setup_puppetmaster.sh' interactively installs and configures
-a puppetserver and additional things like r10k and eyaml.
+a puppetserver and additional things like g10k and eyaml.
 
     $ /vagrant/setup_puppetmaster (local|ubelix)
 
 Follow the last manual steps outlined by the script after its termination, which
-mainly covers setting up priv/pub keys for r10k and eyaml.
+mainly covers setting up priv/pub keys for g10k and eyaml.
 
 Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other host!)**
 

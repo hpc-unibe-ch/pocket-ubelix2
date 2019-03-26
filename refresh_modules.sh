@@ -58,11 +58,11 @@ envdir=$(puppet config --section main print environmentpath)/$PUP_ENV
 
 if [ ! -d $envdir/site ]
 then
-  fail "No controlrepo found in ${envdir}. Have you installed and run r10k yet?"
+  fail "No controlrepo found in ${envdir}. Have you installed and run g10k yet?"
   exit 1
 fi
 
-r10k puppetfile install \
+g10k puppetfile install \
   --verbose \
   --puppetfile $envdir/Puppetfile \
   --moduledir $envdir/modules
