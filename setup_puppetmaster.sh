@@ -4,12 +4,16 @@ set -e
 
 # Settings; change to your needs
 ELMAJ_VER="7"
-PUP_VER="5"
+PUP_VER="6"
 PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
 PUP_ENV="development"
 PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
-R10K_CONFDIR=/etc/puppetlabs/r10k
-R10K_CACHEDIR=/opt/puppetlabs/r10k/cache
+G10K_VER="0.5.8"
+G10K_URL="https://github.com/xorpaul/g10k/releases/download/v${G10K_VER}/g10k-linux-amd64.zip"
+G10K_BINDIR=/usr/local/sbin
+G10K_WRAPPER=g10k-update-env
+G10K_CONFDIR=/etc/puppetlabs/g10k
+G10K_CACHEDIR=/opt/puppetlabs/g10k/cache
 
 # General functions for output beautification
 prompt_confirm() {
@@ -25,23 +29,23 @@ prompt_confirm() {
 }
 
 info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+  printf "  [ \033[00;34m..\033[0m ] $1\n"
 }
 
 user () {
-  printf "\r  [ \033[00;33m??\033[0m ] $1"
+  printf "  [ \033[00;33m??\033[0m ] $1"
 }
 
 warning () {
-  printf "\r  [ \033[00;33m!!\033[0m ] $1\n"
+  printf "  [ \033[00;33m!!\033[0m ] $1\n"
 }
 
 success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+  printf "\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
 }
 
 fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  printf "\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
   echo ''
   exit
 }
@@ -60,21 +64,21 @@ fi
 #
 # Add Puppetlabs yum repository
 #
-if ! rpm -qa | grep puppet6-release >/dev/null 2>&1; then
-  info "Installing puppet collection repo. This may take a while."
+if ! rpm -qa | grep "puppet${PUP_VER}-release" >/dev/null 2>&1; then
+  info "Installing Puppet repository. This may take a while."
   yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null
   yum makecache >/dev/null
-  success "Puppet collection repo has been installed."
+  success "Puppet repository has been installed."
 else
-  success "Puppet collection repo is already available."
+  success "Puppet repository is already available."
 fi
 
 #
 # Install puppetserver package
 #
 if ! rpm -qa | grep puppetserver >/dev/null 2>&1; then
-  info "Installing puppetserver."
+  info "Installing puppetserver. This may take a while."
 
   # Install puppetserver and adjust $PATH
   yum -y install puppetserver >/dev/null 2>&1
@@ -101,7 +105,7 @@ envpath=$(puppet config print environmentpath --section main)
 # We set master, agent and user, as those are relevant and must be available
 # in locally.
 #
-# Until the first r10k run we fake the environment directory  though.
+# Until the first g10k run we fake the environment directory though.
 #
 puppet config set environment "${PUP_ENV}" --section master
 puppet config set environment "${PUP_ENV}" --section agent
@@ -156,18 +160,20 @@ fi
 # for the puppet master.
 #
 ssldir=$(puppet config --section main print ssldir)
-if prompt_confirm "Destroy puppetmaster's CA and create new CA at ${ssldir}?"
+if prompt_confirm "Regenerate Puppet CA at ${ssldir}?"
 then
+  puppet resource service puppet ensure=stopped >/dev/null
+  puppet resource service puppetserver ensure=stopped >/dev/null
   rm -rf "${ssldir}"
-  puppet cert list -a >/dev/null
-  puppet master
-  kill -9 $(ps aux  | grep "[p]uppet master" | awk '{print $2}')
-  success "Successfully created new Puppet CA."
+  puppetserver ca setup >/dev/null
+  success "Successfully regenerate new Puppet CA."
 fi
 
 #
 # Install and configure eyaml
 #
+info "Installing hiera-eyaml."
+
 # Configdir for standalone configuration
 eyaml_confdir=/etc/eyaml
 # Directory for encyrption keys
@@ -190,35 +196,71 @@ if ! type eyaml >/dev/null 2>&1; then
   /opt/puppetlabs/puppet/bin/gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
   ln -s /opt/puppetlabs/puppet/bin/eyaml /opt/puppetlabs/bin/eyaml
   # once to be used by puppetserver
-  /opt/puppetlabs/bin/puppetserver gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
+  puppetserver gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
 fi
 
-# Do not alter global hiera.yaml
-# hiera.yaml is finally environemtn specific
-success "eyaml is now setup and configured."
+# hiera.yaml comes with the controlrepo
+success "hiera-eyaml is now setup and configured."
 
 #
-# r10k installation and configuration
+# g10k installation and configuration
 #
-# Git is needed for r10k to work.
+info "Installing g10k."
+
+# Git is needed for g10k to work.
 if ! type git >/dev/null 2>&1
 then
   yum -y install git >/dev/null 2>&1
 fi
 
-# Install r10k gem in appropriate location and generate necessary directories.
-if ! type r10k >/dev/null 2>&1
+# Unzip is needed for g10k to work.
+if ! type unzip >/dev/null 2>&1
 then
-  /opt/puppetlabs/puppet/bin/gem install r10k --no-ri --no-rdoc >/dev/null
-  ln -s /opt/puppetlabs/puppet/bin/r10k /opt/puppetlabs/bin/r10k
-  mkdir -p $R10K_CONFDIR
-  mkdir -p $R10K_CACHEDIR
+  yum -y install unzip >/dev/null 2>&1
 fi
 
-# Configuration of r10k
-cat << EOF > $R10K_CONFDIR/r10k.yaml
+# Install g10k binary in appropriate location and generate necessary directories.
+if ! type g10k >/dev/null 2>&1
+then
+  TMPZIP=$(mktemp)
+  curl -sL $G10K_URL -o $TMPZIP && unzip -oq $TMPZIP -d /usr/local/sbin
+  rm -f $TMPZIP
+  mkdir -p $G10K_CONFDIR
+  mkdir -p $G10K_CACHEDIR
+fi
+
+cat <<EOF > $G10K_BINDIR/$G10K_WRAPPER
+#!/bin/bash
+
+if [ \$# -ne 1 ]
+then
+  echo "Usage: \${0} (environemnt|all)"
+  exit
+elif [ \$1 == 'all' ]
+then
+  target_env="development testing production"
+  echo "Updating all environments:"
+else
+  target_env=\$1
+fi
+
+for env in \$target_env
+do
+  echo ""
+  echo "Updating environment \${env}:"
+  g10k -config $G10K_CONFDIR/g10k.yaml -maxextractworker 20 -maxworker 50 -branch \$env
+  echo ""
+  echo "Generating Puppet resource types for \${env}"
+  puppet generate types --environment \$env
+done
+EOF
+chmod 755 $G10K_BINDIR/$G10K_WRAPPER
+
+
+# Configuration of g10k
+cat << EOF > $G10K_CONFDIR/g10k.yaml
 # The location to use for storing cached Git repos
-:cachedir: '$R10K_CACHEDIR'
+:cachedir: '$G10K_CACHEDIR'
 
 # A list of git repositories to create
 :sources:
@@ -254,7 +296,7 @@ if [ ! -f ~/.ssh/known_hosts ] || ! cat ~/.ssh/known_hosts 2>/devnull | grep "id
 EOF
 fi
 
-success "R10K is now setup and configured"
+success "g10k is now setup and configured"
 
 #
 # Start/restart the puppetserver but do not yet start puppet-agent
@@ -285,7 +327,7 @@ info "    /root/.ssh/ubelix_bitbucket_rsa.pub"
 info "    chmod 600 ~/.ssh/ubelix_bitbucket_rsa"
 echo ""
 info "* Deploy the environemnts by issuing"
-info "    r10k deploy environment [development] -pv"
+info "    g10k-update-env [\$environment|all]"
 echo ""
 info "* If you are working locally, setup devsymlinks to /vagrant:"
 info "    /vagrant/create_devsymlinks.sh"

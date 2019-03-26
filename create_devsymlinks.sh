@@ -60,7 +60,7 @@ controlrepo_local=$workdir/controlrepo
 
 if [ ! -d $prodenv/site ]
 then
-  fail "No controlrepo found in ${prodenv}. Have you installed and run r10k yet?"
+  fail "No controlrepo found in ${prodenv}. Have you installed and run g10k yet?"
   exit 1
 fi
 

@@ -20,7 +20,7 @@ This repository delivers measures to setup a puppet development environment loca
 
 ## Description
 
-By default the environment can setup a number of maschines - at least for every subrole used in
+By default the environment can setup a number of maschines - at least for every role used in
 UBELIX and where it makes sense additional ones. This mimics UBELIX' infrastructure. Additionally
 it features bash scripts to setup a puppetmaster and to provision puppet on all other machines.
 The puppetmaster then enables testing of puppet/hiera code before rolling out to UBELIX.
@@ -29,7 +29,7 @@ The puppetmaster then enables testing of puppet/hiera code before rolling out to
 
 In principle it does so by:
 
-* providing differen maschines in the Vagrantfiel according the roles/subrole in UBELIX
+* providing different machines in the Vagrantfiel according the roles/tribes in UBELIX
 * providing scripts to install a puppetmaster and to bootstrap all other nodes with puppet-agent
 * providing additional script to fiddle with the puppet code on the puppetmaster
 * being a reminder of useful puppet commands. Look into the scripts
@@ -67,23 +67,41 @@ To see the list of available host run
 ### Configuring the different scripts
 
 Every script has some variables at the top to configure its behaviour. As of this
-writing the defaults will install Puppet-5.3.x and checkout the development branch
-of the ubelix control repository.
+writing the defaults will install Puppet-6 and checkout the development branch
+of the ubelix control repository. Keep in mind that environemnts correspond to
+branches in the puppetenv repository.
 
-Keep in mind that environemnts correspond to branches in the puppetenv repository.
-
-All nodes have their environment set in section `[agent]` of the puppet.conf. Only
-the puppet agent depends on environment on clients. One important exception to this
-rule is the puppetmaster, which must have the environemtn set in section `[main]`.
+The environment the agents run in is set by `setup_puppetmaster.sh` and
+`setup_puppet-agent`. All nodes have their environment set in section `[agent]`
+of the puppet.conf. Only the puppet agent depends on environment on clients.
+One important exception to this rule is the puppetmaster, which must have the
+environemtn set in all sections, e.g. `[master], [agent], [user]`.
 This is necessary for the puppet cli tool to be able to lookup hiera data from
 the correct (same as the agent) environment. For a production puppetmaster (and
-hosts) this setting be absent or set to production. In developemnt set it to an
-environemnt desired, i.e.:
+hosts) this setting be absent or set to production.
+
+You easily change the environment later using the following command:
 
     $ puppet config set --section agent environment development
 
-Use section main on the puppetmaster.
+On the Puppet master the environment must be set for all sections, e.g. main,
+agent, Use section main on the puppetmaster.
 
+
+### Recommended order of Puppet runs
+
+Puppet agent should be run in the following order to have a proper UBELIX setup
+locally on the laptop:
+
+1. puppetmaster   (only once as it MUST fail due to DNS missing)
+1. service01      (run twice)
+1. puppetmaster   (fixes puppetmaster)
+1. puppetdb       (installs puppetdb)
+1. puppetmaster   (connects to puppetdb)
+1. gridamdin01
+1. Any host you wish but think about dependencies in UBELIX! Examples:
+    - nfs01 before any of lrms01/submit/compute nodes as they mount an nfs share)
+    - lrms01 before computed nodes or slurmd won't work out of the box
 
 ### Setting up the master host
 
@@ -95,55 +113,34 @@ virtual hosts at /vagrant.
     $ cd pocket-ubelix2
 
 The script 'setup_puppetmaster.sh' interactively installs and configures
-a puppetserver and additional things like r10k and eyaml.
+a puppetserver and additional things like g10k and eyaml.
 
     $ /vagrant/setup_puppetmaster (local|ubelix)
 
 Follow the last manual steps outlined by the script after its termination, which
-mainly covers setting up priv/pub keys for r10k and eyaml.
+mainly covers setting up priv/pub keys for g10k and eyaml.
 
-Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other host!)**
+Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other
+host!)** The first run will terribly fail, but 
 
 CAVE: If puppet agent is not run at least once on the puppetmaster, then other hosts cannot connect
 because the firewall is closed.
 
-### Setting up the puppetdb host
-
-First clone the pocket-ubelix2 repository and adjust the settings in the scripts. This first
-step can be ommited in a development environment locally the repo is already mounted in the
-virtual hosts at /vagrant.
-
-    $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
-    $ cd pocket-ubelix2
-
-The procedure to provision the puppetdb is as follows:
-
-    $ /vagrant/setup_puppet-agent.sh puppetdb infraserver (local|ubelix)
-    $ puppet config set --section main dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb
-    $ puppet agent -t --waitforcert 20
-
-    # On the puppetmaster:
-    $ puppet cert sign HOSTNAME.ubelix.unibe.ch --allow-dns-alt-names
-
-
 ### Setting up other hosts
 
-First clone the pocket-ubelix2 repository and adjust the settings in the scripts. This first
-step can be ommited in a development environment locally the repo is already mounted in the
-virtual hosts at /vagrant.
+The setup_puppet-agent.sh script is called by the Vagrantfile in pocket-ubleix  on host creation
+using a shell provisioner. On kickstarted UBELIX hosts in the wild, this script gets provisioned
+to /usr/loca/sbin by the kickstart files => it's in your path and ready to be called manually!
 
-    $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
-    $ cd pocket-ubelix2
+    # Omit this in pocket-ubelix
+    $ setup_puppet-agent.sh $ROLE $TRIBE ubelix    
 
-The procedure to provision any other node than the puppetmaster is as follows:
-
-    $ setup_puppet-agent.sh $ROLE $TRIBE (local|ubelix)
     $ puppet agent -t --waitforcert 20
 
     # On the puppetmaster:
-    $ puppet cert sign HOSTNAME.ubelix.unibe.ch
+    $ puppetserver ca sign --certname HOSTNAME.ubelix.unibe.ch
 
-If you don't specify the role and subrole, which are needed to extend
+If you don't specify the role and tribe, which are needed to extend
 the certificate, you have to set those to values in `/etc/puppetlbas/puppet/csr_attributes.yaml`
 by hand **before** running `puppet agent -t`.
 
@@ -151,12 +148,12 @@ by hand **before** running `puppet agent -t`.
 
 All scripts are only tested on the following operating systems:
 
-* CentOS-7.4
+* CentOS-7
 
 ## Copyright Notice
 
 All the provided characters come with no warranty! Use it at your own risk and fun.
 
-© 2017 IT Services Department, University of Bern, Switzerland, see LICENSE file for license details.
+© 2017-2019 IT Services Department, University of Bern, Switzerland, see LICENSE file for license details.
 
 
