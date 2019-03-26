@@ -9,6 +9,7 @@ PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el
 PUP_ENV="development"
 PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
 G10K_VER="0.5.8"
+G10K_URL="https://github.com/xorpaul/g10k/releases/download/v${G10K_VER}/g10k-linux-amd64.zip"
 G10K_BINDIR=/usr/local/sbin
 G10K_WRAPPER=g10k-update-env
 G10K_CONFDIR=/etc/puppetlabs/g10k
@@ -28,23 +29,23 @@ prompt_confirm() {
 }
 
 info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+  printf "  [ \033[00;34m..\033[0m ] $1\n"
 }
 
 user () {
-  printf "\r  [ \033[00;33m??\033[0m ] $1"
+  printf "  [ \033[00;33m??\033[0m ] $1"
 }
 
 warning () {
-  printf "\r  [ \033[00;33m!!\033[0m ] $1\n"
+  printf "  [ \033[00;33m!!\033[0m ] $1\n"
 }
 
 success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+  printf "\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
 }
 
 fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  printf "\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
   echo ''
   exit
 }
@@ -77,7 +78,7 @@ fi
 # Install puppetserver package
 #
 if ! rpm -qa | grep puppetserver >/dev/null 2>&1; then
-  info "Installing puppetserver."
+  info "Installing puppetserver. This may take a while."
 
   # Install puppetserver and adjust $PATH
   yum -y install puppetserver >/dev/null 2>&1
@@ -159,18 +160,20 @@ fi
 # for the puppet master.
 #
 ssldir=$(puppet config --section main print ssldir)
-if prompt_confirm "Destroy puppetmaster's CA and create new CA at ${ssldir}?"
+if prompt_confirm "Regenerate Puppet CA at ${ssldir}?"
 then
   puppet resource service puppet ensure=stopped >/dev/null
   puppet resource service puppetserver ensure=stopped >/dev/null
   rm -rf "${ssldir}"
-  puppetserver ca setup
-  success "Successfully created new Puppet CA."
+  puppetserver ca setup >/dev/null
+  success "Successfully regenerate new Puppet CA."
 fi
 
 #
 # Install and configure eyaml
 #
+info "Installing hiera-eyaml."
+
 # Configdir for standalone configuration
 eyaml_confdir=/etc/eyaml
 # Directory for encyrption keys
@@ -196,26 +199,32 @@ if ! type eyaml >/dev/null 2>&1; then
   puppetserver gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
 fi
 
-# Do not alter global hiera.yaml
-# hiera.yaml is finally environemtn specific
-success "eyaml is now setup and configured."
+# hiera.yaml comes with the controlrepo
+success "hiera-eyaml is now setup and configured."
 
 #
 # g10k installation and configuration
 #
+info "Installing g10k."
+
 # Git is needed for g10k to work.
 if ! type git >/dev/null 2>&1
 then
   yum -y install git >/dev/null 2>&1
 fi
 
+# Unzip is needed for g10k to work.
+if ! type unzip >/dev/null 2>&1
+then
+  yum -y install unzip >/dev/null 2>&1
+fi
+
 # Install g10k binary in appropriate location and generate necessary directories.
 if ! type g10k >/dev/null 2>&1
 then
-  wget "https://github.com/xorpaul/g10k/releases/download/v${G10K_VER}/g10k-linux-amd64.zip" >/dev/null 2>&1
-  unzip g10k-linux-amd64.zip >/dev/null 2>&1
-  mv g10k $G10K_BINDIR/
-  rm -f g10k-linux-amd64.zip
+  TMPZIP=$(mktemp)
+  curl -sL $G10K_URL -o $TMPZIP && unzip -oq $TMPZIP -d /usr/local/sbin
+  rm -f $TMPZIP
   mkdir -p $G10K_CONFDIR
   mkdir -p $G10K_CACHEDIR
 fi
@@ -238,7 +247,6 @@ fi
 for env in \$target_env
 do
   echo ""
-  echo "----------------------------"
   echo "Updating environment \${env}:"
   g10k -config $G10K_CONFDIR/g10k.yaml -maxextractworker 20 -maxworker 50 -branch \$env
   echo ""

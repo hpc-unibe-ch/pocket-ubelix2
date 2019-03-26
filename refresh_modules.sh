@@ -62,10 +62,8 @@ then
   exit 1
 fi
 
-g10k puppetfile install \
-  --verbose \
-  --puppetfile $envdir/Puppetfile \
-  --moduledir $envdir/modules
+g10k -puppetfile install \
+  -config /etc/puppetlabs
 
 success "Refreshed modules in ${envdir}/modules. Don't forget to create symlinks if needed."
 

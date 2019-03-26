@@ -24,23 +24,23 @@ prompt_confirm() {
 }
 
 info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+  printf "  [ \033[00;34m..\033[0m ] $1\n"
 }
 
 user () {
-  printf "\r  [ \033[00;33m??\033[0m ] $1"
+  printf "  [ \033[00;33m??\033[0m ] $1"
 }
 
 warning () {
-  printf "\r  [ \033[00;33m!!\033[0m ] $1\n"
+  printf "  [ \033[00;33m!!\033[0m ] $1\n"
 }
 
 success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+  printf "\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
 }
 
 fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  printf "\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
   echo ''
   exit
 }
@@ -71,7 +71,7 @@ else
 fi
 
 if [ ! -f /etc/profile.d/puppet-agent.sh ]; then
-  info "Installing puppet agent."
+  info "Installing puppet agent. This may take a while."
   yum -y install puppet-agent >/dev/null 2>&1
 
   success "Puppet agent has been installed."
@@ -83,7 +83,7 @@ if ! which puppet >/dev/null 2>&1
 then
   echo ""
   info "To use puppet source the profile file or relogin:"
-  info "$ source /etc/profile.d/puppet-agent.sh\n"
+  info "$ source /etc/profile.d/puppet-agent.sh"
 fi
 
 
@@ -102,6 +102,7 @@ extension_requests:
   1.3.6.1.4.1.34380.1.2.3: "${tribe}"
 YAML
 
+echo ""
 info "If necessary, add dns_alt_naes to section main of ${confdir}/puppet.conf, i.e.:"
 info "$ puppet config set dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb --section main"
 echo ""
