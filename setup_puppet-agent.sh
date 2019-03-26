@@ -103,9 +103,6 @@ extension_requests:
 YAML
 
 echo ""
-info "If necessary, add dns_alt_naes to section main of ${confdir}/puppet.conf, i.e.:"
-info "$ puppet config set dns_alt_names puppetdb01.ubelix.unibe.ch,puppetdb01,puppetdb --section main"
-echo ""
 info "Finally run puppet agent if ready."
 
 exit 0
