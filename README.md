@@ -90,7 +90,7 @@ agent, Use section main on the puppetmaster.
 
 ### Recommended order of Puppet runs
 
-First setup the puppetmaster using `setup_puppetmaster.sh` adnn follow the other setup tasks
+First setup the puppetmaster using `setup_puppetmaster.sh` and follow the other setup tasks
 requested at the end of the script, e.g. eyaml keys palcement, bitbucket key placement, g10k run.
 
 Then run Puppet **agents** on the hosts. These should be run in the following order to have a proper UBELIX setup
@@ -118,20 +118,14 @@ virtual hosts at /vagrant.
 The script 'setup_puppetmaster.sh' interactively installs and configures
 a puppetserver and additional things like g10k and eyaml.
 
-    $ /vagrant/setup_puppetmaster (local|ubelix)
+    $ /vagrant/setup_puppetmaster.sh (local|ubelix)
 
 Follow the last manual steps outlined by the script after its termination, which
 mainly covers setting up priv/pub keys for g10k and eyaml.
 
-Then run `puppet agent -t` for the first time on puppetmaster **(before installing any other
-host!)** The first run will terribly fail, but 
-
-**CAVE: If puppet agent is not run at least once on the puppetmaster, then other hosts cannot connect
-because the firewall is closed.**
-
 ### Setting up other hosts
 
-The setup_puppet-agent.sh script is called by the Vagrantfile in pocket-ubleix  on host creation
+The `setup_puppet-agent.sh` script is called by the Vagrantfile in pocket-ubleix  on host creation
 using a shell provisioner. On kickstarted UBELIX hosts in the wild, this script gets provisioned
 to /usr/loca/sbin by the kickstart files => it's in your path and ready to be called manually!
 

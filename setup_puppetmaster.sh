@@ -345,7 +345,5 @@ info "  This eliminates the need of git push/pull or dealing with feature branch
 echo ""
 info "* Test the setup by issuing"
 info "    puppet lookup --node=puppet01.ubelix.unibe.ch ntp::servers"
-echo ""
-info "If everything is ok, then run puppet agent for the first time on puppetmaster before adding nodes."
 
 exit 0
