@@ -44,7 +44,7 @@ The following requirements are only of importance  when setting up the developme
 
 To setup the above requirements run the following commands from within the toplevel directory of this project:
 
-    $ git clone https://idos-code.unibe.ch/scm/ubelix/puppetenv.git
+    $ git clone https://idos-code.unibe.ch/scm/ubelix/ubelix-controlrepo.git
     $ vagrant plugin install vagrant-hosts
 
 ## Usage
@@ -90,14 +90,15 @@ agent, Use section main on the puppetmaster.
 
 ### Recommended order of Puppet runs
 
-Puppet agent should be run in the following order to have a proper UBELIX setup
-locally on the laptop:
+First setup the puppetmaster using `setup_puppetmaster.sh` adnn follow the other setup tasks
+requested at the end of the script, e.g. eyaml keys palcement, bitbucket key placement, g10k run.
 
-1. puppetmaster   (only once as it MUST fail due to DNS missing)
-1. service01      (run twice)
-1. puppetmaster   (fixes puppetmaster)
+Then run Puppet **agents** on the hosts. These should be run in the following order to have a proper UBELIX setup
+locally:
+
+1. service01      (takes some time due to ISO download on first run - runt twice due to ordering issues))
 1. puppetdb       (installs puppetdb)
-1. puppetmaster   (connects to puppetdb)
+1. puppetmaster   (connects to puppetdb and finishes puppemaster)
 1. gridamdin01    (install the jumphost to ssh into the other machines!)
 1. Any host you wish but think about dependencies in UBELIX! Examples:
     - nfs01 before any of lrms01/submit/compute nodes as they mount an nfs share)
@@ -105,7 +106,7 @@ locally on the laptop:
 
 **CAVE: Do not log out of puppetmaster as long as no jumphost is provisioned. You won't be able to relogin. ;-)**
 
-### Setting up the master host
+### Setting up the puppetmaster
 
 First clone the pocket-ubelix2 repository and adjust the settings in the scripts. This first
 step can be ommited in a development environment locally the repo is already mounted in the

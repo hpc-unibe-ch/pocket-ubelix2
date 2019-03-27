@@ -299,6 +299,16 @@ fi
 success "g10k is now setup and configured"
 
 #
+# Shtudown the firewalld after provisioning
+# the puppet server. Firewalld will be removed
+# on first puppet run.
+#
+if systemctl status firewalld >/dev/null
+then
+  systemctl stop firewalld
+fi
+
+#
 # Start/restart the puppetserver but do not yet start puppet-agent
 #
 if ! systemctl status puppetserver.service >/dev/null 2>&1; then
@@ -329,8 +339,9 @@ echo ""
 info "* Deploy the environemnts by issuing"
 info "    g10k-update-env [\$environment|all]"
 echo ""
-info "* If you are working locally, setup devsymlinks to /vagrant:"
+info "* If you are working locally on the controlrepo, setup devsymlinks to /vagrant:"
 info "    /vagrant/create_devsymlinks.sh"
+info "  This eliminates the need of git push/pull or dealing with feature branches locally."
 echo ""
 info "* Test the setup by issuing"
 info "    puppet lookup --node=puppet01.ubelix.unibe.ch ntp::servers"
