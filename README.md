@@ -44,7 +44,7 @@ The following requirements are only of importance  when setting up the developme
 
 To setup the above requirements run the following commands from within the toplevel directory of this project:
 
-    $ git clone https://idos-code.unibe.ch/scm/ubelix/ubelix-controlrepo.git
+    $ git clone https://idos-code.unibe.ch/scm/ubelix/ubelix-controlrepo.git controlrepo
     $ vagrant plugin install vagrant-hosts
 
 ## Usage
