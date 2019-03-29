@@ -2,57 +2,18 @@
 
 set -e
 
-# Settings; change to your needs
-ELMAJ_VER="7"
-PUP_VER="6"
-PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
-PUP_ENV="development"
-PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
-G10K_VER="0.5.8"
-G10K_URL="https://github.com/xorpaul/g10k/releases/download/v${G10K_VER}/g10k-linux-amd64.zip"
-G10K_BINDIR=/usr/local/sbin
-G10K_WRAPPER=g10k-update-env
-G10K_CONFDIR=/etc/puppetlabs/g10k
-G10K_CACHEDIR=/opt/puppetlabs/g10k/cache
-
-# General functions for output beautification
-prompt_confirm() {
-  while true; do
-    printf "\r  [ \033[0;33m??\033[0m ] ${1:-Continue?} [y/n]: "
-    read -r -n 1 REPLY
-    case $REPLY in
-      [yY]) echo ; return 0 ;;
-      [nN]) echo ; return 1 ;;
-      *) printf " \033[31m %s \n\033[0m" "invalid input"
-    esac
-  done
-}
-
-info () {
-  printf "  [ \033[00;34m..\033[0m ] $1\n"
-}
-
-user () {
-  printf "  [ \033[00;33m??\033[0m ] $1"
-}
-
-warning () {
-  printf "  [ \033[00;33m!!\033[0m ] $1\n"
-}
-
-success () {
-  printf "\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
-}
-
-fail () {
-  printf "\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-  echo ''
-  exit
-}
-
 # Setup variables
 workdir=$(dirname -- $(readlink -f $0))
+source $workdir/settings.inc.sh
 
+# Settings file validation
+if [[ -z $TENANT || -z $PUP_ENV || -z $PUP_ENV_URL ]]
+then
+  warning "Verify the variables in settings.inc.sh first!"
+  exit 1
+fi
+
+# Argument validation
 if [ $# -eq 1 ]
 then
   location="$1"
@@ -64,10 +25,12 @@ fi
 #
 # Add Puppetlabs yum repository
 #
-if ! rpm -qa | grep "puppet${PUP_VER}-release" >/dev/null 2>&1; then
+if ! rpm -qa | grep "puppet${PUP_VER}-release" >/dev/null 2>&1
+then
   info "Installing Puppet repository. This may take a while."
   yum -y install $PUP_URL >/dev/null
   yum clean all >/dev/null
+  rm -rf /var/cache/yum
   yum makecache >/dev/null
   success "Puppet repository has been installed."
 else
@@ -77,7 +40,8 @@ fi
 #
 # Install puppetserver package
 #
-if ! rpm -qa | grep puppetserver >/dev/null 2>&1; then
+if ! rpm -qa | grep puppetserver >/dev/null 2>&1
+then
   info "Installing puppetserver. This may take a while."
 
   # Install puppetserver and adjust $PATH
@@ -199,6 +163,7 @@ if ! type eyaml >/dev/null 2>&1; then
   puppetserver gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
 fi
 
+# Do not alter global hiera.yaml here
 # hiera.yaml comes with the controlrepo
 success "hiera-eyaml is now setup and configured."
 
@@ -255,7 +220,6 @@ do
 done
 EOF
 chmod 755 $G10K_BINDIR/$G10K_WRAPPER
-
 
 # Configuration of g10k
 cat << EOF > $G10K_CONFDIR/g10k.yaml
