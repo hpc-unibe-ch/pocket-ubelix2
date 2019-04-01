@@ -22,13 +22,14 @@ fi
 # Setup variables
 envdir=$(puppet config --section main print environmentpath)/$PUP_ENV
 
-if [ ! -d $envdir/site ]
+if [ ! -f $envdir/manifests/site.pp ]
 then
   fail "No controlrepo found in ${envdir}. Have you installed and run g10k yet?"
   exit 1
 fi
 
-g10k -puppetfile install -config /etc/puppetlabs
+cd $envdir
+g10k -puppetfile install -config /etc/puppetlabs/g10k/g10k.yaml
 
 success "Refreshed modules in ${envdir}/modules. Don't forget to create symlinks if needed."
 
