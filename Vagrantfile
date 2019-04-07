@@ -229,4 +229,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
     end
   end
 
+  (1..2).each do |index|
+    global.vm.define "ces0#{index}" do |config|
+      config.vm.host_name = "ces0#{index}.ubelix.unibe.ch"
+      config.vm.network "private_network", ip: "10.10.130.#{index}", netmask: "255.255.0.0"
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "ces0#{index}"
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ["modifyvm", :id, "--name", "ces0#{index}"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
+        vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      end
+      config.vm.provision :hosts, :sync_hosts => true
+      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh cesnode storagenode local"
+    end
+  end
+
 end
