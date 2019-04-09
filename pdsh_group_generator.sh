@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-groupfile=/etc/dsh/group/hosts
+groupfile=$HOME/.dsh/group/hosts
 
 mkdir -p `dirname $groupfile`
 rm -f $groupfile
-for host in `cat /etc/hosts | awk '/^10.1/{print $3}'`
+for host in `cat /etc/hosts | awk '/^10.10/{print $3}'`
 do
   echo $host >> $groupfile
 done

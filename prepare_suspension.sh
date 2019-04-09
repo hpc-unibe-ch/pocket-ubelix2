@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for host in `cat /etc/hosts | awk '/^10.1/{print $3}'`
+for host in `cat /etc/hosts | awk '/^10.10/{print $3}'`
 do
 
   ssh $host <<-'ENDSSH'
