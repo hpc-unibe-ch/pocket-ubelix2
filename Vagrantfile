@@ -7,17 +7,6 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   global.vm.box = "centos-7-x86_64-nocm"
 
-
-  # In UBELIX only root can login on infraservers and root can only
-  # login using key authentication except on gridadmins.
-  #
-  # This trigger makes sure that login as vagrant is possible when
-  # vagrant starts the machines after suspend or halt as vagrant
-  # has to login to the machine upon a vagrant up.
-  global.trigger.before [:reload, :suspend, :halt] do |trigger|
-    trigger.run_remote = {inline: "sed -i 's/^AllowUser root/#AllowUser root/' /etc/ssh/sshd_config"}
-  end
-
   #
   # Puppet infrastructure
   #
