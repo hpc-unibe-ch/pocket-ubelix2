@@ -166,7 +166,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
-      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh submit frontendserver local"
+      config.vm.provision "shell", inline: "mkdir -p /scratch; /vagrant/setup_puppet-agent.sh submit frontendserver local"
     end
   end
 
@@ -227,10 +227,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--name", "ces0#{index}"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
+        vb.customize ["modifyvm", :id, "--nic3", "intnet"]
+        vb.customize ["modifyvm", :id, "--nic4", "intnet"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
       config.vm.provision :hosts, :sync_hosts => true
-      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh cesnode storagenode local"
+      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh cesnode storageserver local"
     end
   end
 
