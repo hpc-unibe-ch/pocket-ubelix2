@@ -3,7 +3,7 @@
 set -e
 
 # General settings
-TENANT="ID-INF" # ID-SYS, ID-INF, ...
+TENANT="ID-SYS"
 ELMAJ_VER="7"
 PUP_VER="6"
 PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
