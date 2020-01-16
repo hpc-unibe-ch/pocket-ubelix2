@@ -103,10 +103,9 @@ YAML
 csr_attr_file=$confdir/csr_attributes.yaml
 cat > $csr_attr_file << YAML
 extension_requests:
-  1.3.6.1.4.1.34380.1.2.1: "puppetmaster"
-  1.3.6.1.4.1.34380.1.2.2: "${location}"
-  1.3.6.1.4.1.34380.1.2.3: "infraserver"
-  pp_cli_auth: "true"
+  1.3.6.1.4.1.34380.1.2.1:  "puppetmaster"
+  1.3.6.1.4.1.34380.1.2.2:  "${location}"
+  1.3.6.1.4.1.34380.1.2.3:  "infraserver"
 YAML
 chown puppet:puppet $csr_attr_file
 
