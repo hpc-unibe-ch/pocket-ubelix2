@@ -24,6 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--name", "puppet01"]
       vb.customize ["modifyvm", :id, "--memory", "2048"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -39,6 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--name", "puppetdb01"]
       vb.customize ["modifyvm", :id, "--memory", "512"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh puppetdb infraserver local"
@@ -61,6 +63,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["modifyvm", :id, "--nic3", "intnet"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh service infraserver local"
@@ -83,6 +86,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--name", "gridadmin0#{index}"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh gridadmin infraserver local"
@@ -101,6 +105,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--name", "lrms0#{index}"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh slurmmaster infraserver local"
@@ -120,6 +125,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--name", "nfs01"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh fileserver infraserver local"
@@ -137,6 +143,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--name", "service03"]
       vb.customize ["modifyvm", :id, "--memory", "1024"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -154,6 +161,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--name", "submit-lb"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -168,6 +176,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--name", "submit0#{index}"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch; /vagrant/setup_puppet-agent.sh submit frontendserver local"
@@ -183,6 +192,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--name", "grid01"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -200,6 +210,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--name", "anode00#{index}"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh anode computenode local"
@@ -216,6 +227,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--name", "knode0#{index}"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh knode computenode local"
@@ -234,6 +246,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--nic3", "intnet"]
         vb.customize ["modifyvm", :id, "--nic4", "intnet"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh cesnode storageserver local"
