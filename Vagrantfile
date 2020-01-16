@@ -48,7 +48,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   # Service hosts - DNS, DHCP, TFTP, Mrepo - you know, services!
   #
   (1..2).each do |index|
-    global.vm.define "service0#{index}" do |config|
+    autostart = index == 1 ? true : false
+    global.vm.define "service0#{index}", autostart: autostart do |config|
       config.vm.host_name = "service0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.128.2#{index}", netmask: "255.255.0.0"
       # Webserver port forwarding
@@ -70,7 +71,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   # Gridadmins - Jump hosts to rule them all.
   #
   (1..2).each do |index|
-    global.vm.define "gridadmin0#{index}" do |config|
+    primary   = index == 1 ? true : false
+    autostart = index == 1 ? true : false
+    global.vm.define "gridadmin0#{index}", primary: primary,  autostart: autostart do |config|
       config.vm.host_name = "gridadmin0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.128.5#{index}", netmask: "255.255.0.0"
       config.vm.network "forwarded_port", guest: 80, host: 8087 + index
@@ -90,7 +93,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   # lrms - for the Slurm times of life
   #
   (1..2).each do |index|
-    global.vm.define "lrms0#{index}" do |config|
+    global.vm.define "lrms0#{index}", autostart: false do |config|
       config.vm.host_name = "lrms0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.128.#{index+23}", netmask: "255.255.0.0"
       config.vm.provider "virtualbox" do |vb|
@@ -107,7 +110,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   #
   # nfs servers - for file sharing business
   #
-  global.vm.define "nfs01" do |config|
+  global.vm.define "nfs01", autostart: false do |config|
     config.vm.box = "centos-7-x86_64-nocm"
     config.vm.host_name = "nfs01.ubelix.unibe.ch"
     config.vm.network "private_network", ip: "10.10.128.27", netmask: "255.255.0.0"
@@ -125,7 +128,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   #
   # logger - Logging, monitoring, CIA, ...
   #
-  global.vm.define "logger" do |config|
+  global.vm.define "logger", autostart: false do |config|
     config.vm.host_name = "service03.ubelix.unibe.ch"
     config.vm.network "private_network", ip: "10.10.128.23", netmask: "255.255.0.0"
     config.vm.provider "virtualbox" do |vb|
@@ -141,7 +144,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   #
   # Frontend servers
   #
-  global.vm.define "submit-lb" do |config|
+  global.vm.define "submit-lb", autostart: false do |config|
     config.vm.box = "centos-7-x86_64-nocm"
     config.vm.host_name = "submit-config.ubelix.unibe.ch"
     config.vm.network "private_network", ip: "10.10.129.10", netmask: "255.255.0.0"
@@ -156,7 +159,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   end
 
   (1..2).each do |index|
-    global.vm.define "submit0#{index}" do |config|
+    global.vm.define "submit0#{index}", autostart: false do |config|
       config.vm.host_name = "submit0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.129.2#{index}", netmask: "255.255.0.0"
       config.vm.provider "virtualbox" do |vb|
@@ -171,7 +174,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
     end
   end
 
-  global.vm.define "grid01" do |config|
+  global.vm.define "grid01", autostart: false do |config|
     config.vm.host_name = "grid01.ubelix.unibe.ch"
     config.vm.network "private_network", ip: "10.10.129.31", netmask: "255.255.0.0"
     config.vm.provider "virtualbox" do |vb|
@@ -188,7 +191,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   # Compute nodes
   #
   (1..2).each do |index|
-    global.vm.define "anode00#{index}" do |config|
+    global.vm.define "anode00#{index}", autostart: false do |config|
       config.vm.host_name = "anode00#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.2.#{index}", netmask: "255.255.0.0"
       config.vm.provider "virtualbox" do |vb|
@@ -204,7 +207,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   end
 
   (1..2).each do |index|
-    global.vm.define "knode0#{index}" do |config|
+    global.vm.define "knode0#{index}", autostart: false do |config|
       config.vm.host_name = "knode0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.11.#{index}", netmask: "255.255.0.0"
       config.vm.provider "virtualbox" do |vb|
@@ -220,7 +223,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   end
 
   (1..2).each do |index|
-    global.vm.define "ces0#{index}" do |config|
+    global.vm.define "ces0#{index}", autostart: false do |config|
       config.vm.host_name = "ces0#{index}.ubelix.unibe.ch"
       config.vm.network "private_network", ip: "10.10.130.#{index}", netmask: "255.255.0.0"
       config.vm.provider "virtualbox" do |vb|
