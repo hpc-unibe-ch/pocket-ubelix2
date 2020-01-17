@@ -251,6 +251,11 @@ Host idos-code.unibe.ch
     PreferredAuthentications publickey
     IdentityFile ~/.ssh/ubelix_bitbucket_rsa
 
+Host github.com
+    User git
+    Hostname github.com
+    IdentityFile ~/.ssh/ubelix_github_rsa
+    IdentitiesOnly yes
 EOF
 fi
 

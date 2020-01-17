@@ -1,26 +1,22 @@
 #!/usr/bin/env bash
 
 # General settings
-TENANT="ID-INF" # ID-SYS, ID-INF, ...
+TENANT="ID-SYS" # ID-SYS, ID-INF, ...
 ELMAJ_VER="7"
 PUP_VER="6"
 PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
 PUP_ENV="development"
-PUP_RUNINTERVAL="7200" # 2h
-PUP_RUNTIMEOUT="900"  # 15m
+PUP_RUNINTERVAL="1800" # 30m
+PUP_RUNTIMEOUT="0"  # unlimited
 
 # Puppet master settings
-PUP_ENV_URL="ssh://git@idos-code.unibe.ch:7999/ubelix/ubelix-controlrepo.git"
-G10K_VER="0.5.8"
+PUP_ENV_URL="ssh://git@github.com/hpc-unibe-ch/ubelix-controlrepo.git"
+G10K_VER="0.8.9"
 G10K_URL="https://github.com/xorpaul/g10k/releases/download/v${G10K_VER}/g10k-linux-amd64.zip"
 G10K_BINDIR=/usr/local/sbin
 G10K_WRAPPER=g10k-update-env
 G10K_CONFDIR=/etc/puppetlabs/g10k
 G10K_CACHEDIR=/opt/puppetlabs/g10k/cache
-
-# Puppet agent settings
-PUP_RUNINTERVAL="1800" # 30m
-PUP_RUNTIMEOUT="0"  # unlimited
 
 
 # General functions used in shell scripts
