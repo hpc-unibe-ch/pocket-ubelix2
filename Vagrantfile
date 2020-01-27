@@ -8,6 +8,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   global.vm.box = "centos-7-x86_64-nocm"
 
   #
+  # Gridadmins - Jump hosts to rule them all.
+  #
+  (1..2).each do |index|
+    primary   = index == 1 ? true : false
+    autostart = index == 1 ? true : false
+    global.vm.define "gridadmin0#{index}", primary: primary,  autostart: autostart do |config|
+      config.vm.host_name = "gridadmin0#{index}.ubelix.unibe.ch"
+      config.vm.network "private_network", ip: "10.10.128.5#{index}", netmask: "255.255.0.0"
+      config.vm.network "forwarded_port", guest: 80, host: 8087 + index
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "gridadmin0#{index}.ubelix.unibe.ch"
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ["modifyvm", :id, "--name", "gridadmin0#{index}"]
+        vb.customize ["modifyvm", :id, "--memory", "384"]
+        vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+        vb.linked_clone = true
+      end
+      config.vm.provision :hosts, :sync_hosts => true
+      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh gridadmin infraserver local"
+    end
+  end
+
+  #
   # Puppet infrastructure
   #
   # The global name puppet has no numbers by intention.
@@ -67,29 +90,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh service infraserver local"
-    end
-  end
-
-  #
-  # Gridadmins - Jump hosts to rule them all.
-  #
-  (1..2).each do |index|
-    primary   = index == 1 ? true : false
-    autostart = index == 1 ? true : false
-    global.vm.define "gridadmin0#{index}", primary: primary,  autostart: autostart do |config|
-      config.vm.host_name = "gridadmin0#{index}.ubelix.unibe.ch"
-      config.vm.network "private_network", ip: "10.10.128.5#{index}", netmask: "255.255.0.0"
-      config.vm.network "forwarded_port", guest: 80, host: 8087 + index
-      config.vm.provider "virtualbox" do |vb|
-        vb.name = "gridadmin0#{index}.ubelix.unibe.ch"
-        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        vb.customize ["modifyvm", :id, "--name", "gridadmin0#{index}"]
-        vb.customize ["modifyvm", :id, "--memory", "384"]
-        vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
-      end
-      config.vm.provision :hosts, :sync_hosts => true
-      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh gridadmin infraserver local"
     end
   end
 
