@@ -286,7 +286,7 @@ cat << EOF > $G10K_CONFDIR/g10k.yaml
     prefix: false
 EOF
 
-# Add public read only key for UBELIX to do bitbucket clones
+# Add public read only key for UBELIX to do github.com and bitbucket clones
 if [ ! -d ~/.ssh/ ]; then
   mkdir -p ~/.ssh/
   chmod 700 ~/.ssh/
@@ -300,6 +300,11 @@ Host idos-code.unibe.ch
     Hostname idos-code.unibe.ch
     PreferredAuthentications publickey
     IdentityFile ~/.ssh/ubelix_bitbucket_rsa
+EOF
+fi
+
+if ! grep "github" ~/.ssh/config >/dev/null 2>&1; then
+  cat << 'EOF' >> ~/.ssh/config
 
 Host github.com
     User git
@@ -312,6 +317,12 @@ fi
 if [ ! -f ~/.ssh/known_hosts ] || ! cat ~/.ssh/known_hosts 2>/devnull | grep "idos-code" >/dev/null; then
   cat << 'EOF' >> ~/.ssh/known_hosts
 [idos-code.unibe.ch]:7999,[130.92.253.206]:7999 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrC7tqEA/QDGCito53+9nO/n8ndXYqrNvqWfoOZS87heChNsYykbWIOqMdYisV+ELgniDQb0BFXAieHq+Rs3Y1PduoYbRXIjoqpVf8hxbrKdcbYNh+xizWuaeZ3UAK1rFaESnPOWn+cVK4HIFPc9oREj4rhSAFDVAF7DLA0S3tPLhhUuVcTkXYENyGY1AvFfEp5aCyA2d0WuRci1Mt5w8PuH40mP5sCXH8IZ6dIydypNMtQHdNbKMcit4dKrgAWlqHvg+eW4AMiidyEDz9z25mivcQPBNbnK2/IfW1IeavafhLHF2mTQkzvzm7leJ7v8J9aJtt2aGqM+JYokucW+XL
+EOF
+fi
+
+if [ ! -f ~/.ssh/known_hosts ] || ! cat ~/.ssh/known_hosts 2>/devnull | grep "github" >/dev/null; then
+  cat << 'EOF' >> ~/.ssh/known_hosts
+github.com,140.82.118.* ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
 EOF
 fi
 
@@ -351,9 +362,9 @@ info "    chown puppet ${eyaml_keydir}/*.pem"
 info "    chmod 440 ${eyaml_keydir}/*.pem"
 echo ""
 info "* Place public and private key for idos-code connectivity to:"
-info "    /root/.ssh/ubelix_bitbucket_rsa"
-info "    /root/.ssh/ubelix_bitbucket_rsa.pub"
-info "    chmod 600 ~/.ssh/ubelix_bitbucket_rsa"
+info "    /root/.ssh/ubelix_{github,bitbucket}_rsa"
+info "    /root/.ssh/ubelix_{github,bitbucket}_rsa.pub"
+info "    chmod 600 ~/.ssh/ubelix_{github,bitbucket}_rsa"
 echo ""
 info "* Deploy the environemnts by issuing"
 info "    g10k-update-env [\$environment|all]"
