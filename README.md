@@ -1,4 +1,4 @@
-# Pocket UBELIX
+# Pocket UBELIX 2
 
 #### Table of Contents
 
@@ -12,18 +12,20 @@
     1. [Setting up the master host](#setting-up-the-master-host)
     1. [Setting up the puppetdb host](#setting-up-the-puppetdb-host)
     1. [Setting up other hosts](#setting-up-other-hosts)
+    1. [Puppet Environments of Hosts](#puppet-environments-of-hosts)
 1. [Copyright Notice](#copyright-notice)
 
 ## Overview
 
-This repository delivers measures to setup a puppet development environment locally on a laptop.
+This repository brings all ingredients to setup an UBELIX development environment on a laptop.
 
 ## Description
 
-By default the environment can setup a number of maschines - at least for every role used in
+By default the environment can setup a number of machines - at least for every role used in
 UBELIX and where it makes sense additional ones. This mimics UBELIX' infrastructure. Additionally
 it features bash scripts to setup a puppetmaster and to provision puppet on all other machines.
-The puppetmaster then enables testing of puppet/hiera code before rolling out to UBELIX.
+The puppetmaster then enables testing of puppet/hiera code before rolling out to UBELIX. Locally
+the environment `development` is applied by default.
 
 ## Features
 
@@ -41,6 +43,7 @@ The following requirements are only of importance  when setting up the developme
 
 * UBELIX Puppet environment repository (puppetenv)
 * [Vagrant Hosts Plugin](https://github.com/adrienthebo/vagrant-hosts)
+* Access to the admin network where the UBELIX mirrors are located (IDaccess)
 
 To setup the above requirements run the following commands from within the toplevel directory of this project:
 
@@ -69,23 +72,8 @@ To see the list of available host run
 Every script has some variables at the top to configure its behaviour. As of this
 writing the defaults will install Puppet-6 and checkout the development branch
 of the ubelix control repository. Keep in mind that environemnts correspond to
-branches in the puppetenv repository.
-
-The environment the agents run in is set by `setup_puppetmaster.sh` and
-`setup_puppet-agent`. All nodes have their environment set in section `[agent]`
-of the puppet.conf. Only the puppet agent depends on environment on clients.
-One important exception to this rule is the puppetmaster, which must have the
-environemtn set in all sections, e.g. `[master], [agent], [user]`.
-This is necessary for the puppet cli tool to be able to lookup hiera data from
-the correct (same as the agent) environment. For a production puppetmaster (and
-hosts) this setting be absent or set to production.
-
-You easily change the environment later using the following command:
-
-    $ puppet config set --section agent environment development
-
-On the Puppet master the environment must be set for all sections, e.g. main,
-agent, Use section main on the puppetmaster.
+branches in the puppetenv repository. Normally you shoudl not have to change
+anything.
 
 
 ### Recommended order of Puppet runs
@@ -125,7 +113,7 @@ mainly covers setting up priv/pub keys for g10k and eyaml.
 
 ### Setting up other hosts
 
-The `setup_puppet-agent.sh` script is called by the Vagrantfile in pocket-ubleix  on host creation
+The `setup_puppet-agent.sh` script is called by the Vagrantfile in pocket-ubleix on host creation
 using a shell provisioner. On kickstarted UBELIX hosts in the wild, this script gets provisioned
 to /usr/loca/sbin by the kickstart files => it's in your path and ready to be called manually!
 
@@ -141,6 +129,24 @@ If you don't specify the role and tribe, which are needed to extend
 the certificate, you have to set those to values in `/etc/puppetlbas/puppet/csr_attributes.yaml`
 by hand **before** running `puppet agent -t`.
 
+### Puppet Environment of Hosts
+
+The environment the agents run in is set by `setup_puppetmaster.sh` and
+`setup_puppet-agent`. All nodes have their environment set in section `[agent]`
+of the puppet.conf. Only the puppet agent depends on environment on clients.
+One important exception to this rule is the puppetmaster, which must have the
+environemtn set in all sections, e.g. `[master], [agent], [user]`.
+This is necessary for the puppet cli tool to be able to lookup hiera data from
+the correct (same as the agent) environment. For a production puppetmaster (and
+hosts) this setting be absent or set to production.
+
+You easily change the environment later usina the following command:
+
+    $ puppet config set --section agent environment development
+
+On the Puppet master the environment must be set for all sections, e.g. main,
+agent, Use section main on the puppetmaster.
+
 ## Limitations
 
 All scripts are only tested on the following operating systems:
@@ -151,6 +157,6 @@ All scripts are only tested on the following operating systems:
 
 All the provided characters come with no warranty! Use it at your own risk and fun.
 
-© 2017-2019 IT Services Department, University of Bern, Switzerland, see LICENSE file for license details.
+© 2017-2020 IT Services Department, University of Bern, Switzerland, see LICENSE file for license details.
 
 
