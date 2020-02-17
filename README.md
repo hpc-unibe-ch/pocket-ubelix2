@@ -47,7 +47,7 @@ The following requirements are only of importance  when setting up the developme
 
 To setup the above requirements run the following commands from within the toplevel directory of this project:
 
-    $ git clone https://idos-code.unibe.ch/scm/ubelix/ubelix-controlrepo.git controlrepo
+    $ git clone git@github.com:hpc-unibe-ch/ubelix-controlrepo.git
     $ vagrant plugin install vagrant-hosts
 
 ## Usage
@@ -100,7 +100,7 @@ First clone the pocket-ubelix2 repository and adjust the settings in the scripts
 step can be ommited in a development environment locally the repo is already mounted in the
 virtual hosts at /vagrant.
 
-    $ git clone https://idos-code.unibe.ch/scm/ubelix/pocket-ubelix2.git
+    $ git clone git@github.com:hpc-unibe-ch/pocket-ubelix2.git
     $ cd pocket-ubelix2
 
 The script 'setup_puppetmaster.sh' interactively installs and configures
