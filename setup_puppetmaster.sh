@@ -276,8 +276,12 @@ cat << EOF > $G10K_CONFDIR/g10k.yaml
 # The location to use for storing cached Git repos
 :cachedir: '$G10K_CACHEDIR'
 
+# Purge umanaged files from environments as well
+deploy:
+  purge_levels: ['deployment', 'puppetfile', 'environment']
+
 # A list of git repositories to create
-:sources:
+sources:
   # This will clone the git repository and instantiate an environment per
   # branch in /etc/puppetlabs/code/environments
   :ubelix-controlrepo:
