@@ -5,7 +5,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
-  global.vm.box = "centos-7-x86_64-nocm"
+  global.vm.box = "hpc-unibe-ch/centos7"
 
   #
   # Gridadmins - Jump hosts to rule them all.
@@ -116,7 +116,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   # nfs servers - for file sharing business
   #
   global.vm.define "nfs01", autostart: false do |config|
-    config.vm.box = "centos-7-x86_64-nocm"
+    config.vm.box = "hpc-unibe-ch/centos7"
     config.vm.host_name = "nfs01.ubelix.unibe.ch"
     config.vm.network "private_network", ip: "10.10.128.27", netmask: "255.255.0.0"
     config.vm.provider "virtualbox" do |vb|
