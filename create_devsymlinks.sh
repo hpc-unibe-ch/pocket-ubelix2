@@ -67,7 +67,7 @@ fi
 rm -rf $envdir/data && ln -sf $controlrepo_local/data $envdir/data
 rm -rf $envdir/manifests && ln -sf $controlrepo_local/manifests $envdir/manifests
 rm -rf $envdir/scripts && ln -sf $controlrepo_local/scripts $envdir/scripts
-rm -rf $envdir/site && ln -sf $controlrepo_local/site $envdir/site
+rm -rf $envdir/site-modules && ln -sf $controlrepo_local/site-modules $envdir/site-modules
 rm -rf $envdir/environment.conf && ln -sf $controlrepo_local/environment.conf $envdir/environment.conf
 rm -rf $envdir/hiera.yaml && ln -sf $controlrepo_local/hiera.yaml $envdir/hiera.yaml
 rm -rf $envdir/Puppetfile && ln -sf $controlrepo_local/Puppetfile $envdir/Puppetfile
