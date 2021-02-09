@@ -207,10 +207,10 @@ EOF
 if ! type eyaml >/dev/null 2>&1; then
   # Install hiera-eyaml gem in appropriate locations;
   # once for cli usage
-  /opt/puppetlabs/puppet/bin/gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
+  /opt/puppetlabs/puppet/bin/gem install hiera-eyaml --no-document >/dev/null
   ln -s /opt/puppetlabs/puppet/bin/eyaml /opt/puppetlabs/bin/eyaml
   # once to be used by puppetserver
-  puppetserver gem install hiera-eyaml --no-ri --no-rdoc >/dev/null
+  puppetserver gem install hiera-eyaml --no-document >/dev/null
 fi
 
 # Do not alter global hiera.yaml here
