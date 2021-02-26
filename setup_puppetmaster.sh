@@ -170,14 +170,18 @@ YAML
 chown puppet:puppet $csr_attr_file
 
 #
-# Lower memory settings in vagrant boxes
+# Set JAVA heap space based on processors count
 #
-if [ -d /vagrant ]
-then
-  info "Adjusting heap size for puppetserver."
-  sed -i 's/Xms2g/Xms1g/' /etc/sysconfig/puppetserver
-  sed -i 's/Xmx2g/Xmx1g/' /etc/sysconfig/puppetserver
-fi
+processors=$(facter processors.count)
+case $processors in
+  1) heapmem='1g';;
+  2|3) heapmem='2g';;
+  *) heapmem='3g';;
+esac
+
+info "Adjusting heap size for puppetserver."
+sed -i 's/Xms[0-9]*g/Xms'$heapmem'/' /etc/sysconfig/puppetserver
+sed -i 's/Xmx[0-9]*g/Xmx'$heapmem'/' /etc/sysconfig/puppetserver
 
 #
 # Regenerate all certificates to pickup extensions
