@@ -8,8 +8,8 @@ ELMAJ_VER="7"
 PUP_VER="6"
 PUP_URL="https://yum.puppetlabs.com/puppet${PUP_VER}/puppet${PUP_VER}-release-el-${ELMAJ_VER}.noarch.rpm"
 PUP_ENV="development"
-PUP_RUNINTERVAL="7200" # 2h
-PUP_RUNTIMEOUT="900"  # 15m
+PUP_RUNINTERVAL="1800" # 30m
+PUP_RUNTIMEOUT="1200"  # 20m
 
 # General functions used in shell scripts
 prompt_confirm() {
