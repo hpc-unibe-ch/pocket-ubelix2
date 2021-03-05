@@ -131,6 +131,13 @@ mkdir -p $envpath/$PUP_ENV
 #
 puppet config set show_diff true --section main
 
+# Install the required ruby gem
+puppetserver gem list | grep diff-lcs >/dev/null
+if [ $? -ne 0 ]
+then
+  puppetserver gem install diff-lcs --no-document >/dev/null
+fi
+
 #
 # Custom mapping for UBELIX subrole
 #
