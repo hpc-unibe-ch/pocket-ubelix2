@@ -281,6 +281,12 @@ do
   echo ""
   echo "Generating Puppet resource types for \${env}"
   puppet generate types --environment \$env
+  echo ""
+  echo "Invalidating environment_cache of local puppetserver for environment \${env}"
+  curl -i --cert /etc/puppetlabs/puppet/ssl/certs/puppet01.ubelix.unibe.ch.pem \
+          --key /etc/puppetlabs/puppet/ssl/private_keys/puppet01.ubelix.unibe.ch.pem \
+          --cacert /etc/puppetlabs/puppet/ssl/ca/ca_crt.pem \
+          -X DELETE https://\$(hostname -f):8140/puppet-admin-api/v1/environment-cache?environment=\$env
 done
 EOF
 chmod 755 $G10K_BINDIR/$G10K_WRAPPER
