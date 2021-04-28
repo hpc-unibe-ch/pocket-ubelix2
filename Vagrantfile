@@ -179,7 +179,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
-      config.vm.provision "shell", inline: "mkdir -p /scratch; /vagrant/setup_puppet-agent.sh submit frontendserver local"
+      config.vm.provision "shell", inline: "mkdir -p /scratch"
+      config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh submit frontendserver local"
     end
   end
 
@@ -213,6 +214,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
+      config.vm.provision "shell", inline: "mkdir -p /scratch"
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh anode computenode local"
     end
   end
@@ -230,6 +232,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
+      config.vm.provision "shell", inline: "mkdir -p /scratch"
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh knode computenode local"
     end
   end
