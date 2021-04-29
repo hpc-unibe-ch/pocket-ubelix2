@@ -63,6 +63,7 @@ then
 fi
 
 cd $envdir
+rm -rf /tmp/g10k
 g10k -puppetfile install -config /etc/puppetlabs/g10k/g10k.yaml
 
 success "Refreshed modules in ${envdir}/modules. Don't forget to create symlinks if needed."
