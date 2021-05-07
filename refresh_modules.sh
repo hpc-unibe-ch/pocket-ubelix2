@@ -47,7 +47,7 @@ then
   exit 1
 fi
 
-if [ ! -f /etc/vagrant_box_build_time ]
+if [ ! -d /vagrant ]
 then
   fail "Not in a virtualbox machine. Refusing to work."
   exit 1
