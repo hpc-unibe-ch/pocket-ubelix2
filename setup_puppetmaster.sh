@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
 
 # General settings
 TENANT="ID-SYS"
