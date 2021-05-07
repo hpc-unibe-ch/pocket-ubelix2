@@ -61,10 +61,31 @@ then
   fail "No controlrepo found in ${envdir}. Have you installed and run g10k yet?"
   exit 1
 fi
-
 cd $envdir
+
+# Preserve devsymlinks to local modules if available
+declare -A local_modules
+for link in $(find modules -maxdepth 1 -type l)
+do
+  target=$(readlink $link)
+  local_modules+=([$link]=$target)
+done
+
+# Delete cache as the cache might cause problems
 rm -rf /tmp/g10k
+# Deploy fresh copies of all modules
 g10k -puppetfile install -config /etc/puppetlabs/g10k/g10k.yaml
+
+# Replay devymlinks of preserved modules
+for key in ${!local_modules[@]}
+do
+  # First delete the fresh copy g10k has deployed
+  rm -rf $key
+
+  # and symlink our local version again
+  ln -sf ${local_modules[$key]} $key
+done
+
 
 success "Refreshed modules in ${envdir}/modules. Don't forget to create symlinks if needed."
 
