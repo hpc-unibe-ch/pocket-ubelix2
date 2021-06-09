@@ -6,6 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   global.vm.box = "hpc-unibe-ch/centos7"
+  global.vm.box_check_update = false
 
   #
   # Gridadmins - Jump hosts to rule them all.
