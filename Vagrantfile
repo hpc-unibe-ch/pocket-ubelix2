@@ -97,9 +97,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   #
   # lrms - for the Slurm times of life
   #
+  # Make lrms01 a slurmmaster
   global.vm.define "lrms01", autostart: false do |config|
     config.vm.host_name = "lrms01.ubelix.unibe.ch"
-    config.vm.network "private_network", ip: "10.10.128.#{index+23}", netmask: "255.255.0.0"
+    config.vm.network "private_network", ip: "10.10.128.24", netmask: "255.255.0.0"
     config.vm.provider "virtualbox" do |vb|
       vb.name = "lrms01"
       vb.customize ["modifyvm", :id, "--name", "lrms01"]
@@ -112,12 +113,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   end
 
   # Make lrms02 mange a slurmmaster_test
-  global.vm.define "lrms01", autostart: false do |config|
-    config.vm.host_name = "lrms01.ubelix.unibe.ch"
-    config.vm.network "private_network", ip: "10.10.128.#{index+23}", netmask: "255.255.0.0"
+  global.vm.define "lrms02", autostart: false do |config|
+    config.vm.host_name = "lrms02.ubelix.unibe.ch"
+    config.vm.network "private_network", ip: "10.10.128.25", netmask: "255.255.0.0"
     config.vm.provider "virtualbox" do |vb|
-      vb.name = "lrms01"
-      vb.customize ["modifyvm", :id, "--name", "lrms01"]
+      vb.name = "lrms02"
+      vb.customize ["modifyvm", :id, "--name", "lrms03"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       vb.linked_clone = true
