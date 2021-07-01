@@ -125,6 +125,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh slurmmaster_test infraserver local"
+    config.vm.provision "shell", inline: "/vagrant/create_local_users.sh"
   end
 
   #
@@ -196,6 +197,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch"
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh submit frontendserver local"
+      config.vm.provision "shell", inline: "/vagrant/create_local_users.sh"
     end
   end
 
@@ -231,6 +233,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch"
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh anode computenode local"
+      config.vm.provision "shell", inline: "/vagrant/create_local_users.sh"
     end
   end
 
@@ -249,6 +252,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch"
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh knode computenode local"
+      config.vm.provision "shell", inline: "/vagrant/create_local_users.sh"
     end
   end
 
