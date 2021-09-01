@@ -19,7 +19,6 @@ G10K_WRAPPER=g10k-update-env
 G10K_CONFDIR=/etc/puppetlabs/g10k
 G10K_CACHEDIR=/opt/puppetlabs/g10k/cache
 
-
 # General functions used in shell scripts
 prompt_confirm() {
   while true; do
@@ -130,12 +129,17 @@ mkdir -p $envpath/$PUP_ENV
 #
 puppet config set show_diff true --section main
 
-# Install the required ruby gem
-puppetserver gem list | grep diff-lcs >/dev/null
-if [ $? -ne 0 ]
-then
-  puppetserver gem install diff-lcs --no-document >/dev/null
-fi
+# Install the required ruby gems
+
+for gem in diff-lcs toml-rb
+do
+  puppetserver gem list | grep "${gem}" >/dev/null
+  if [ $? -ne 0 ]
+  then
+    puppetserver gem install "${gem}" --no-document >/dev/null
+    success "Installed gem ${gem}"
+  fi
+done
 
 #
 # Custom mapping for UBELIX subrole
