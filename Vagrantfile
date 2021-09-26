@@ -141,23 +141,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
   end
 
   #
-  # logger - Logging, monitoring, CIA, ...
-  #
-  global.vm.define "logger", autostart: false do |config|
-    config.vm.hostname = "service03.ubelix.unibe.ch"
-    config.vm.network "private_network", ip: "10.10.128.23", netmask: "255.255.0.0"
-    config.vm.provider "virtualbox" do |vb|
-      vb.name = "logger01.ubelix.unibe.ch"
-      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      vb.customize ["modifyvm", :id, "--name", "service03"]
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
-      vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
-    end
-    config.vm.provision :hosts, :sync_hosts => true
-  end
-
-  #
   # Frontend servers
   #
   global.vm.define "submit-lb", autostart: false do |config|
