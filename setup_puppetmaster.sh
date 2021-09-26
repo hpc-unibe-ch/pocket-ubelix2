@@ -131,7 +131,9 @@ puppet config set show_diff true --section main
 
 # Install the required ruby gems
 
-for gem in diff-lcs toml-rb
+# toml-rb is required by puppetlabs-puppet_metrics_dashboard and puppet-telegraf
+# toml is required by puppet-grafana
+for gem in diff-lcs toml toml-rb
 do
   puppetserver gem list | grep "${gem}" >/dev/null
   if [ $? -ne 0 ]
