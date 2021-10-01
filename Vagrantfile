@@ -23,7 +23,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh gridadmin infraserver local"
@@ -46,7 +45,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--memory", "2048"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -61,7 +59,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--memory", "512"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh puppetdb infraserver local"
@@ -83,7 +80,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["modifyvm", :id, "--nic3", "intnet"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh service infraserver local"
@@ -101,7 +97,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.name = "lrms01"
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh slurmmaster infraserver local"
@@ -115,7 +110,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.name = "lrms02"
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh slurmmaster_test infraserver local"
@@ -134,7 +128,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
     config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh fileserver infraserver local"
@@ -152,7 +145,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -166,7 +158,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch"
@@ -183,7 +174,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--memory", "384"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-      vb.linked_clone = true
     end
     config.vm.provision :hosts, :sync_hosts => true
   end
@@ -200,7 +190,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch"
@@ -218,7 +207,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--memory", "384"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "mkdir -p /scratch"
@@ -238,7 +226,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |global|
         vb.customize ["modifyvm", :id, "--nic3", "intnet"]
         vb.customize ["modifyvm", :id, "--nic4", "intnet"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
-        vb.linked_clone = true
       end
       config.vm.provision :hosts, :sync_hosts => true
       config.vm.provision "shell", inline: "/vagrant/setup_puppet-agent.sh cesnode storageserver local"
