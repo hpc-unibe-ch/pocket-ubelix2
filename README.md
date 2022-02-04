@@ -31,7 +31,7 @@ the environment `development` is applied by default.
 
 In principle it does so by:
 
-* providing different machines in the Vagrantfiel according the roles/tribes in UBELIX
+* providing different machines in the Vagrantfile according the roles/tribes in UBELIX
 * providing scripts to install a puppetmaster and to bootstrap all other nodes with puppet-agent
 * providing additional script to fiddle with the puppet code on the puppetmaster
 * being a reminder of useful puppet commands. Look into the scripts
@@ -51,6 +51,14 @@ To setup the above requirements run the following commands from within the tople
     $ vagrant plugin install vagrant-hosts
 
 ## Usage
+
+### Important Notice for VirtualBox
+
+Since a recent update Virtualbox only allows IPs for host-only networking from
+a specific range and our 10.x addresses do not work anymore. Run the following
+command to allow these again:
+
+    sudo mkdir -p /private/etc/vbox && echo "* 10.0.0.0/8" | sudo tee /private/etc/vbox/networks.conf
 
 ### Starting machines in general
 
